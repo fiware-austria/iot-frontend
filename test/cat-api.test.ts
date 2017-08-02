@@ -18,6 +18,21 @@ beforeAll(done => {
 
 beforeEach(async () => await Cat.remove());
 
+const range = (size) => {
+  let result = Array<number>(size);
+  for (let i = 0; i < size; i += 1) {
+    result[i] = i + 1;
+  }
+  return result;
+}
+
+const createCats = (number) =>
+  range(1, number) .map( nr => ({
+    name: `Cat$nr`,
+    weight: nr,
+    age: nr
+  }));
+
 describe('GET /api/cats', () => {
   it('should load an emtpy list of cats', async () => {
     const response = await supertest(app).get('/api/cats');
