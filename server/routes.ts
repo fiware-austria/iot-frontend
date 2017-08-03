@@ -18,6 +18,8 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
 
   const jwtAuth = passport.authenticate('jwt', { session: false});
 
+  app.use(passport.initialize());
+
   // Cats
   router.route('/cats').get(catCtrl.getAll);
   router.route('/cats/count').get(jwtAuth, catCtrl.count);
@@ -34,6 +36,17 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
   router.route('/user/:id').get(userCtrl.get);
   router.route('/user/:id').put(userCtrl.update);
   router.route('/user/:id').delete(userCtrl.delete);
+
+  // GitHub Login
+  router.route('/auth/github').get(
+    passport.authenticate('github'));
+
+  router.route('/auth/github/callback').get(
+    passport.authenticate('github', { failureRedirect: '/login' , session: false}),
+    (req, res) => {
+      // Successful authentication, redirect home.
+      res.redirect('/');
+    });
 
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);
