@@ -25,7 +25,7 @@ const app = express();
 
 // Register JWT Strategy
 passport.use(new Strategy(jwtOpts, (jwtPayload, done) => {
-  console.log(JSON.stringify(jwtPayload));
+  // console.log(JSON.stringify(jwtPayload));
   User.findOne({_id: jwtPayload.user._id})
     .then((user) => done(null, user))
     .catch(done);
@@ -36,9 +36,12 @@ passport.use(new github.Strategy({
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
     callbackURL: process.env.GITHIB_CALLBACK_URL,
-    session: false
+    session: false,
+    scope: 'user:email'
   },
-  (accessToken, refreshToken, profile, done) => done(null, profile))
+  (accessToken, refreshToken, profile, done) =>
+    User.findOrCreate(profile).then(user => done(null, user)).catch(done)
+  )
 );
 
 app.set('port', (process.env.PORT || 3000));

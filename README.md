@@ -1,5 +1,8 @@
 # Angular Full Stack [![Dependencies](https://david-dm.org/DavideViolante/Angular2-Full-Stack.svg)](https://david-dm.org/DavideViolante/Angular2-Full-Stack) [![Donate](https://img.shields.io/badge/paypal-donate-179BD7.svg)](https://www.paypal.me/dviolante) [![MIT license](http://img.shields.io/badge/license-MIT-lightgrey.svg)](http://opensource.org/licenses/MIT)
 
+This project is based on Davide Violantes [Angular Full Stack](https://github.com/DavideViolante/Angular-Full-Stack) starter project. 
+The major difference to the original project is that server- and client-side are all tested with _jest_. Additionally this project
+integrates _passport_ for validating the JWT token and supporting OAuth authentication (it actually features a github example).
 
 The frontend is generated with [Angular CLI](https://github.com/angular/angular-cli). The backend is made from scratch. Whole stack in [TypeScript](https://www.typescriptlang.org).
 
@@ -16,9 +19,11 @@ Other tools and technologies used:
 * [JSON Web Token](https://jwt.io): user authentication
 * [Angular 2 JWT](https://github.com/auth0/angular2-jwt): JWT helper for Angular
 * [Bcrypt.js](https://github.com/dcodeIO/bcrypt.js): password encryption
+* [Passport](http://passportjs.org/): various authentication strategies
+* [Jest](https://facebook.github.io/jest/): delightful JavaScript testing
 
 ## Prerequisites
-1. Install [Node.js](https://nodejs.org) and [MongoDB](https://www.mongodb.com)
+1. Install [Node.js](https://nodejs.org), [Yarn](https://yarnpkg.com/lang/en/) and [MongoDB](https://www.mongodb.com)
 2. Install Angular CLI: `npm i -g @angular/cli`
 3. From project root folder install all the dependencies: `npm i`
 
@@ -62,7 +67,23 @@ A window will automatically open at [localhost:4200](http://localhost:4200). Ang
 * More tests
 
 ## Running unit tests
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `yarn test` to execute the client-side (Angular4) unit tests via [Jest](https://facebook.github.io/jest/).
+To run the server-side (node/express) tests run `yarn test-srv`
+
+If you need to debug your server-side tests there's `yarn compile-tests` that will generate JavaScript
+in the folder `/test-out-tsc` (e.g. _Webstorm_ requires JS file with source maps for debugging). 
+Besides this you will also need to modify the `roots` configuration in the `jest` section of your `package.json` file
+in order to load these tests instead of the `typescript` version:
+
+```json
+"jest": {
+    ...
+    "roots": [
+      "test-out-tsc",
+      "server"
+    ]
+  }
+```
 
 ## Running end-to-end tests
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/). 
@@ -77,4 +98,5 @@ To get more help on the `angular-cli` use `ng --help` or go check out the [Angul
 To get more help about this project, [visit the wiki](https://github.com/DavideViolante/Angular-Full-Stack/wiki).
 
 ### Author
-* [Davide Violante](https://github.com/DavideViolante)
+* [AnotherCodeArtist](https://github.com/AnotherCodeArtist/angular4-full-stack) 
+* Original Project: [Davide Violante](https://github.com/DavideViolante)

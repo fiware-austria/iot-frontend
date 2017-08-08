@@ -14,6 +14,7 @@ abstract class BaseCtrl {
   count = (req, res) => {
     this.model.count((err, count) => {
       if (err) { return console.error(err); }
+      console.log(`Count: ${count}`)
       res.json(count);
     });
   };

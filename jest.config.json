@@ -2,6 +2,7 @@
   "preset": "jest-preset-angular",
   "setupTestFrameworkScriptFile": "<rootDir>/client/setupJest.ts",
   "testRegex": "(/__tests__/.*|\\.(spec))\\.(ts|js)$",
+  "roots": ["client"],
   "globals": {
     "ts-jest": {
       "tsConfigFile": "client/tsconfig.spec.json"

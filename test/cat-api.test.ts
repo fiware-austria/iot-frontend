@@ -5,32 +5,40 @@ import {app} from '../server/app';
 import Cat from '../server/models/cat';
 import User from '../server/models/user';
 import * as jwt from 'jsonwebtoken';
+import * as Bluebird from 'bluebird';
+mongoose.Promise = Bluebird;
 
 dotenv.load({path: '.env.test'});
 
 let testUser = {
   email: 'test@test.com',
   password: 'topsecret',
-  username: 'test'
+  username: 'test',
+  provider: 'local',
+  role: 'user'
 };
 
 let userJWT: string;
 
 beforeAll(done => {
-  console.log('Setting up Database Connection');
+
   mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
   const db = mongoose.connection;
-  (<any>mongoose).Promise = global.Promise;
-  db.on('error', done);
-  db.once('open', () =>
-    User.remove().then(() =>
-    new User(testUser).save(user => {
-      testUser = user;
-      userJWT = jwt.sign({user: user}, process.env.SECRET_TOKEN);
-    }))
-      .then(done)
-      .catch(done)
-  );
+  db.on('error', (err) => {
+    console.log(`Error: ${err}`);
+    done(err);
+  });
+  db.once('open', async () => {
+    try {
+      const result = await User.remove();
+      testUser = await new User(testUser).save();
+      userJWT = jwt.sign({user: testUser}, process.env.SECRET_TOKEN);
+      done();
+    } catch (e) {
+      console.log(`ERROR: ${e}`);
+      done(e);
+    }
+  });
 });
 
 afterAll(done => User.remove().then(done).catch(done));
@@ -72,6 +80,7 @@ describe('GET /api/cats', () => {
 
 describe('POST /api/cat', () => {
   it('should create a new Cat if the current user is logged in', async () => {
+    // aconsole.log(`Using token: ${userJWT}`);
     const loginResponse = await supertest(app)
       .post('/api/cat')
       .set('Authorization', `Bearer ${userJWT}`)

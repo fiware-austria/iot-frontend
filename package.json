@@ -16,7 +16,8 @@
     "lint": "ng lint",
     "lintbe": "tslint server/**/**.ts{,x}",
     "e2e": "ng e2e",
-    "test-srv": "jest --watch"
+    "test-srv": "jest --watch",
+    "compile-tests": "tsc -p test"
   },
   "private": true,
   "dependencies": {
@@ -39,7 +40,7 @@
     "font-awesome": "^4.7.0",
     "jquery": "^3.2.1",
     "jsonwebtoken": "^7.4.1",
-    "mongoose": "^4.10.4",
+    "mongoose": "^4.11.6",
     "morgan": "^1.8.2",
     "passport": "^0.3.2",
     "passport-github": "^1.1.0",
@@ -52,9 +53,11 @@
     "@angular/cli": "1.1.0",
     "@angular/compiler-cli": "^4.0.0",
     "@angular/language-service": "^4.0.0",
+    "@types/bluebird": "^3.5.8",
     "@types/jest": "^19.2.4",
     "@types/node": "~6.0.60",
     "@types/supertest": "^2.0.2",
+    "bluebird": "^3.5.0",
     "codelyzer": "~3.0.1",
     "concurrently": "^3.3.0",
     "jasmine-core": "~2.6.2",
@@ -84,7 +87,11 @@
     "transform": {
       "^.+\\.(ts|tsx)$": "<rootDir>/preprocessor.js"
     },
-    "testRegex": "(test/.*|\\.(test))\\.(tsx?|jsx?)$"
+    "testRegex": "(test/.*|\\.(test))\\.(tsx?|jsx?)$",
+    "roots": [
+      "test",
+      "server"
+    ]
   },
   "main": "dist/server/server.js"
 }

@@ -6,6 +6,7 @@ import Cat from './models/cat';
 import User from './models/user';
 import {PassportStatic} from 'passport';
 import {Application} from 'express';
+import * as jwt from 'jsonwebtoken';
 
 
 
@@ -23,7 +24,7 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
   // Cats
   router.route('/cats').get(catCtrl.getAll);
   router.route('/cats/count').get(jwtAuth, catCtrl.count);
-  router.route('/cat').post(catCtrl.insert);
+  router.route('/cat').post(jwtAuth, catCtrl.insert);
   router.route('/cat/:id').get(catCtrl.get);
   router.route('/cat/:id').put(catCtrl.update);
   router.route('/cat/:id').delete(catCtrl.delete);
@@ -44,8 +45,9 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
   router.route('/auth/github/callback').get(
     passport.authenticate('github', { failureRedirect: '/login' , session: false}),
     (req, res) => {
-      // Successful authentication, redirect home.
-      res.redirect('/');
+      // Successful authentication, return JWT token.
+      const token = jwt.sign({ user: req.user }, process.env.SECRET_TOKEN); // , { expiresIn: 10 } seconds
+      res.status(200).json({ token: token });
     });
 
   // Apply the routes to our application with the prefix /api

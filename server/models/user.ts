@@ -1,11 +1,13 @@
 import * as bcrypt from 'bcryptjs';
 import * as mongoose from 'mongoose';
+import {GitHubUser} from './types';
 
 const userSchema = new mongoose.Schema({
-  username: String,
-  email: { type: String, unique: true, lowercase: true, trim: true },
+  username: { type: String, required: true },
+  email: { type: String, unique: true, lowercase: true, trim: true, required: true },
   password: String,
-  role: String
+  role: {type: String, enum: ['user', 'admin'], required: true},
+  provider: {type: String, required: true}
 });
 
 // Before saving the user, hash the password
@@ -21,6 +23,21 @@ userSchema.pre('save', function(next) {
     });
   });
 });
+
+
+userSchema.statics.findOrCreate = function(user: GitHubUser) {
+  const email = user.emails.find(m => m.primary).value;
+  const self = this;
+  return this.findOne({email: email})
+    .then((result) => result || self.create({
+      username: user.username,
+      provider: user.provider,
+      email: email,
+      role: 'user'
+    }))
+
+};
+
 
 userSchema.methods.comparePassword = function(candidatePassword, callback) {
   bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {

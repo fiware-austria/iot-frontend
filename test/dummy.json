@@ -1,0 +1,50 @@
+{
+  "provider": {
+    "message": "Path `provider` is required.",
+    "name": "ValidatorError",
+    "properties": {
+      "type": "required",
+      "message": "Path `{PATH}` is required.",
+      "path": "provider"
+    },
+    "kind": "required",
+    "path": "provider",
+    "$isValidatorError": true
+  },
+  "role": {
+    "message": "Path `role` is required.",
+    "name": "ValidatorError",
+    "properties": {
+      "type": "required",
+      "message": "Path `{PATH}` is required.",
+      "path": "role"
+    },
+    "kind": "required",
+    "path": "role",
+    "$isValidatorError": true
+  },
+  "email": {
+    "message": "Path `email` is required.",
+    "name": "ValidatorError",
+    "properties": {
+      "type": "required",
+      "message": "Path `{PATH}` is required.",
+      "path": "email"
+    },
+    "kind": "required",
+    "path": "email",
+    "$isValidatorError": true
+  },
+  "username": {
+    "message": "Path `username` is required.",
+    "name": "ValidatorError",
+    "properties": {
+      "type": "required",
+      "message": "Path `{PATH}` is required.",
+      "path": "username"
+    },
+    "kind": "required",
+    "path": "username",
+    "$isValidatorError": true
+  }
+}
