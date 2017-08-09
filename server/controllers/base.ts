@@ -22,34 +22,22 @@ abstract class BaseCtrl {
 
   // Count all
   count = (req, res) => {
-    this.model.count((err, count) => {
-      if (err) { return console.error(err); }
-      console.log(`Count: ${count}`);
-      res.json(count);
-    });
+    this.model.count().then(count => res.json(count)
+      .catch(err => res.status(500).json({message: err})));
   };
 
   // Insert
   insert = (req, res) => {
     const obj = new this.model(req.body);
-    obj.save((err, item) => {
-      // 11000 is the code for duplicate key error
-      if (err && err.code === 11000) {
-        res.sendStatus(400);
-      }
-      if (err) {
-        return console.error(err);
-      }
-      res.status(200).json(item);
-    });
+    obj.save().then(res.json)
+      .catch(err => res.status(err.code === 11000 ? 400 : 500).json({message: err}));
   };
 
   // Get by id
   get = (req, res) => {
-    this.model.findOne({ _id: req.params.id }, (err, obj) => {
-      if (err) { return console.error(err); }
-      res.json(obj);
-    });
+    this.model.findOne({ _id: req.params.id })
+      .then(res.json)
+      .catch(err => res.status(500).json({message: err}));
   };
 
   // Update by id

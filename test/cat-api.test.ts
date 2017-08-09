@@ -6,45 +6,12 @@ import Cat from '../server/models/cat';
 import User from '../server/models/user';
 import * as jwt from 'jsonwebtoken';
 import * as Bluebird from 'bluebird';
+import {IUser} from "../server/models/types";
 mongoose.Promise = Bluebird;
+mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
+const db = mongoose.connection;
 
 dotenv.load({path: '.env.test'});
-
-let testUser = {
-  email: 'test@test.com',
-  password: 'topsecret',
-  username: 'test',
-  provider: 'local',
-  role: 'user'
-};
-
-let userJWT: string;
-
-beforeAll(done => {
-
-  mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
-  const db = mongoose.connection;
-  db.on('error', (err) => {
-    console.log(`Error: ${err}`);
-    done(err);
-  });
-  db.once('open', async () => {
-    try {
-      const result = await User.remove();
-      testUser = await new User(testUser).save();
-      userJWT = jwt.sign({user: testUser}, process.env.SECRET_TOKEN);
-      done();
-    } catch (e) {
-      console.log(`ERROR: ${e}`);
-      done(e);
-    }
-  });
-});
-
-afterAll(done => User.remove().then(done).catch(done));
-
-beforeEach(async () => await Cat.remove());
-
 
 const range = (size) => {
   const result = Array<number>(size);
@@ -60,6 +27,28 @@ const createCats = (number) =>
     weight: nr,
     age: nr
   }));
+
+const createUsers = (number, prefix = 'user', role = 'user'): Array<IUser> =>
+  range(number).map(nr => ({
+    username: `${prefix}${nr}`,
+    email: `${prefix}${nr}@test.com`,
+    password: 'topsecret',
+    provider: 'local',
+    role : role
+  }));
+
+const saveUsers = (users: Array<IUser>) =>
+  Promise.all(users.map(u => new User(u).save()));
+
+const clearDB = () => Promise.all([Cat.remove(), User.remove()]);
+
+beforeEach(async () => await clearDB());
+
+afterAll(async () => await clearDB());
+
+const getToken = (user: IUser) => jwt.sign({ user: user }, process.env.SECRET_TOKEN);
+
+
 
 describe('GET /api/cats', () => {
   it('should load an emtpy list of cats', async () => {
@@ -81,9 +70,10 @@ describe('GET /api/cats', () => {
 describe('POST /api/cat', () => {
   it('should create a new Cat if the current user is logged in', async () => {
     // aconsole.log(`Using token: ${userJWT}`);
+    const savedUser = await saveUsers(createUsers(1, 'catlover'));
     const loginResponse = await supertest(app)
       .post('/api/cat')
-      .set('Authorization', `Bearer ${userJWT}`)
+      .set('Authorization', `Bearer ${getToken(savedUser[0])}`)
       .send(createCats(1)[0]);
     expect(loginResponse.status).toBe(200);
     const cat = loginResponse.body;
