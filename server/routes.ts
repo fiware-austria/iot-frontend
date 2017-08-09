@@ -7,6 +7,7 @@ import User from './models/user';
 import {PassportStatic} from 'passport';
 import {Application} from 'express';
 import * as jwt from 'jsonwebtoken';
+import {booleanLiteral} from "babel-types";
 
 
 
@@ -18,6 +19,18 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
   const userCtrl = new UserCtrl();
 
   const jwtAuth = passport.authenticate('jwt', { session: false});
+  const isProfileOwner = (req) => JSON.stringify(req.user._id) === JSON.stringify(req.users._id);
+  const isAdmin = (req) => req.user.role === 'admin';
+  const isAdminOrProfileOwner = (req) => isAdmin(req) || isProfileOwner(req);
+  const checkPermission = condition => (req, res, next) =>
+    condition(req) ? next() : res.status(403).send();
+
+  const protectRole = (req, res, next) => {
+    if (!isAdmin(req)) {
+      delete req.body.role;
+    }
+    next();
+  }
 
   app.use(passport.initialize());
 
@@ -31,12 +44,14 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
 
   // Users
   router.route('/login').post(userCtrl.login);
-  router.route('/users').get(userCtrl.getAll);
-  router.route('/users/count').get(userCtrl.count);
+  router.route('/users').get(jwtAuth, checkPermission(isAdmin), userCtrl.getAll);
+  router.route('/users/count').get(jwtAuth, checkPermission(isAdmin), userCtrl.count);
   router.route('/user').post(userCtrl.insert);
-  router.route('/user/:id').get(userCtrl.get);
-  router.route('/user/:id').put(userCtrl.update);
-  router.route('/user/:id').delete(userCtrl.delete);
+  router.route('/user/:userId').get(jwtAuth, checkPermission(isAdminOrProfileOwner), userCtrl.show);
+  router.route('/user/:userId').put(jwtAuth, checkPermission(isAdminOrProfileOwner), protectRole, userCtrl.update);
+  router.route('/user/:userId').delete(jwtAuth, checkPermission(isAdmin), userCtrl.delete);
+
+  router.param('userId', userCtrl.load);
 
   // GitHub Login
   router.route('/auth/github').get(

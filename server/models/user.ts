@@ -1,10 +1,12 @@
 import * as bcrypt from 'bcryptjs';
 import * as mongoose from 'mongoose';
-import {GitHubUser} from './types';
+import {GitHubUser, IUser} from './types';
+import * as Email from 'mongoose-type-email';
+import {IUserModel} from './types';
 
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true },
-  email: { type: String, unique: true, lowercase: true, trim: true, required: true },
+  email: { type: Email, unique: true, lowercase: true, trim: true, required: true },
   password: String,
   role: {type: String, enum: ['user', 'admin'], required: true},
   provider: {type: String, required: true}
@@ -25,7 +27,7 @@ userSchema.pre('save', function(next) {
 });
 
 
-userSchema.statics.findOrCreate = function(user: GitHubUser) {
+userSchema.statics.findOrCreate = function(user: GitHubUser): IUser {
   const email = user.emails.find(m => m.primary).value;
   const self = this;
   return this.findOne({email: email})
@@ -54,6 +56,6 @@ userSchema.set('toJSON', {
   }
 });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model<IUserModel>('User', userSchema);
 
 export default User;

@@ -52,7 +52,7 @@ const range = (size) => {
     result[i] = i + 1;
   }
   return result;
-}
+};
 
 const createCats = (number) =>
   range(number).map(nr => ({

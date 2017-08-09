@@ -1,3 +1,5 @@
+import * as mongoose from 'mongoose';
+
 export interface GitHubUser {
   username: string,
   provider: string,
@@ -7,5 +9,15 @@ export interface GitHubUser {
     verified: boolean
   }]
 }
+
+export interface IUser {
+  username: string,
+  email: string,
+  password: string,
+  role: string,
+  provider: string
+}
+
+export interface IUserModel extends IUser, mongoose.Document { }
 
 

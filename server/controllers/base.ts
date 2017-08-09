@@ -2,6 +2,7 @@ abstract class BaseCtrl {
 
   abstract model: any;
 
+
   // Get all
   getAll = (req, res) => {
     this.model.find({}, (err, docs) => {
@@ -10,11 +11,20 @@ abstract class BaseCtrl {
     });
   };
 
+
+  load = (req, res, next, id) =>
+    this.model.findById(id)
+      .then(m => req[this.model.collection.collectionName] = m)
+      .then(() => next())
+      .catch(err => res.status(500).json({message: `Could not load this element (${err})`}));
+
+  show = (req, res) => res.json(req[this.model.collection.collectionName]);
+
   // Count all
   count = (req, res) => {
     this.model.count((err, count) => {
       if (err) { return console.error(err); }
-      console.log(`Count: ${count}`)
+      console.log(`Count: ${count}`);
       res.json(count);
     });
   };
@@ -43,16 +53,17 @@ abstract class BaseCtrl {
   };
 
   // Update by id
-  update = (req, res) => {
-    this.model.findOneAndUpdate({ _id: req.params.id }, req.body, (err) => {
-      if (err) { return console.error(err); }
-      res.sendStatus(200);
-    });
-  };
+  update = (req, res) =>
+    this.model.findOneAndUpdate({ _id: req[this.model.collection.collectionName]._id }, req.body, {new: true})
+      .then(m => res.json(m))
+      .catch(err => {
+        console.error(err);
+        res.status(500).json({message: err});
+      });
 
   // Delete by id
   delete = (req, res) => {
-    this.model.findOneAndRemove({ _id: req.params.id }, (err) => {
+    this.model.findOneAndRemove({ _id: req[this.model.collection.collectionName]._id }, (err) => {
       if (err) { return console.error(err); }
       res.sendStatus(200);
     });

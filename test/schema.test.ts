@@ -61,6 +61,24 @@ describe('User Schema', () => {
         done();
       });
   });
+  it('should not allow to create users with invalid email', async () => {
+    const user = {
+      username: 'test',
+      email : 'email',
+      password: 'topsecret',
+      provider: 'local',
+      role: 'user'
+    };
+    try {
+      const newUser = await new User(user).save();
+      expect(newUser).toBeUndefined();
+    } catch (err) {
+      const errors = err.errors;
+      expect(errors.email).toBeDefined();
+      expect(errors.email.kind).toBe('user defined');
+      expect(errors.email.path).toBe('email');
+    }
+  });
   it('should allow users to be created', async () => {
     const user = {
       username: 'test',
@@ -83,11 +101,11 @@ describe('User Schema', () => {
       ]
     };
 
-    const checkUser = (result, gitHubUser) => {
-      expect(result.username).toBe(gitHubUser.username);
-      expect(result.email).toBe(gitHubUser.emails[0].value);
+    const checkUser = (result, oauthUser) => {
+      expect(result.username).toBe(oauthUser.username);
+      expect(result.email).toBe(oauthUser.emails[0].value);
       expect(result._id).toBeDefined();
-      expect(result.provider).toBe(gitHubUser.provider);
+      expect(result.provider).toBe(oauthUser.provider);
       expect(result.role).toBe('user');
     };
     const user1 = await User.findOrCreate(gitHubUser);
@@ -95,5 +113,20 @@ describe('User Schema', () => {
     const user2 = await User.findOrCreate(gitHubUser);
     checkUser(user2, gitHubUser);
     expect(user1._id).toEqual(user2._id);
+  });
+
+  it('should update an existing entry', async () => {
+    const user = {
+      username: 'test',
+      email : 'test@test.com',
+      password: 'topsecret',
+      provider: 'local',
+      role: 'user'
+    };
+    const savedUser = await new User(user).save();
+    const changedUser = Object.assign({}, user);
+    changedUser.username = 'dummy';
+    const updatedUser = await User.findOneAndUpdate({_id: savedUser._id}, changedUser, {new: true});
+    expect(updatedUser.username).toBe('dummy');
   });
 });

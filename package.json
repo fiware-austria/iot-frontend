@@ -17,7 +17,7 @@
     "lintbe": "tslint server/**/**.ts{,x}",
     "e2e": "ng e2e",
     "test-srv": "jest --watch",
-    "compile-tests": "tsc -p test"
+    "compile-tests": "tsc -w -p test"
   },
   "private": true,
   "dependencies": {
@@ -41,6 +41,7 @@
     "jquery": "^3.2.1",
     "jsonwebtoken": "^7.4.1",
     "mongoose": "^4.11.6",
+    "mongoose-type-email": "^1.0.5",
     "morgan": "^1.8.2",
     "passport": "^0.3.2",
     "passport-github": "^1.1.0",
@@ -89,7 +90,7 @@
     },
     "testRegex": "(test/.*|\\.(test))\\.(tsx?|jsx?)$",
     "roots": [
-      "test",
+      "test-out-tsc",
       "server"
     ]
   },
