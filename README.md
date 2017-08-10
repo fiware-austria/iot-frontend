@@ -65,6 +65,7 @@ A window will automatically open at [localhost:4200](http://localhost:4200). Ang
 
 ## To do
 * More tests
+* Security isn't properly integrated at the client side (JWT isn't added to the request)
 
 ## Running unit tests
 Run `yarn test` to execute the client-side (Angular4) unit tests via [Jest](https://facebook.github.io/jest/).
