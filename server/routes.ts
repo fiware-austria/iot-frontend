@@ -7,7 +7,6 @@ import User from './models/user';
 import {PassportStatic} from 'passport';
 import {Application} from 'express';
 import * as jwt from 'jsonwebtoken';
-import {booleanLiteral} from "babel-types";
 
 
 

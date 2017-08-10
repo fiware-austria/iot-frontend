@@ -29,7 +29,7 @@ abstract class BaseCtrl {
   // Insert
   insert = (req, res) => {
     const obj = new this.model(req.body);
-    obj.save().then(res.json)
+    obj.save().then(m => res.json(m))
       .catch(err => res.status(err.code === 11000 ? 400 : 500).json({message: err}));
   };
 

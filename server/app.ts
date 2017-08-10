@@ -13,6 +13,7 @@ import * as github from 'passport-github';
 import * as passport from 'passport';
 
 import User from './models/user';
+import chatRoutes from './chat-routes';
 
 dotenv.load('.env');
 
@@ -50,8 +51,11 @@ app.use('/', express.static(path.join(__dirname, '../public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
+
+
 app.use(morgan('dev'));
 
+const ioServer = chatRoutes(app);
 setRoutes(app, passport);
 console.log('Registered Routes');
 app.get('/*', function (req, res) {
@@ -59,4 +63,4 @@ app.get('/*', function (req, res) {
 });
 
 
-export {app};
+export {app, ioServer};
