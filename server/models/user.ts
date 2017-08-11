@@ -5,7 +5,7 @@ import * as Email from 'mongoose-type-email';
 import {IUserModel} from './types';
 
 const userSchema = new mongoose.Schema({
-  username: { type: String, required: true },
+  username: { type: String, required: true, unique: true },
   email: { type: Email, unique: true, lowercase: true, trim: true, required: true },
   password: String,
   role: {type: String, enum: ['user', 'admin'], required: true},

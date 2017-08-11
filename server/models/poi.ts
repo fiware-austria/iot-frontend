@@ -49,7 +49,7 @@ poiSchema.index({
 poiSchema.statics.load = function(id) {
   return this.findOne({
     _id: id
-  }).populate('creator', 'local.username');
+  }).populate('creator', 'username');
 };
 
 export default mongoose.model('POI', poiSchema);

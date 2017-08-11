@@ -1,4 +1,4 @@
-import {IUser} from '../server/models/types';
+import {IUser, IUserModel} from '../server/models/types';
 import User from '../server/models/user';
 import * as jwt from 'jsonwebtoken';
 
@@ -20,7 +20,7 @@ export const createUsers = (number, prefix = 'user', role = 'user'): Array<IUser
     role : role
   }));
 
-export const saveUsers = (users: Array<IUser>) =>
+export const saveUsers = (users: Array<IUser>): Promise<[IUserModel]> =>
   Promise.all(users.map(u => new User(u).save()));
 
 export const getToken = (user: IUser) => jwt.sign({ user: user }, process.env.SECRET_TOKEN);

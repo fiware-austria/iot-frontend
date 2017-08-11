@@ -18,6 +18,22 @@ export interface IUser {
   provider: string
 }
 
-export interface IUserModel extends IUser, mongoose.Document { }
+export interface IUserModel extends IUser, mongoose.Document {
+  _id: mongoose.Types.ObjectID;
+}
 
+export interface IPOI {
+  name: string,
+  description?: string,
+  loc: {
+    type?: string,
+    coordinates: [number]
+  },
+  creator: any
+  createdAt?: Date
+}
+
+export interface IPOIModel extends IPOI, mongoose.Document {
+  _id: mongoose.Types.ObjectID;
+}
 

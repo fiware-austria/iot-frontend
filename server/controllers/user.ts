@@ -7,6 +7,7 @@ import BaseCtrl from './base';
 export default class UserCtrl extends BaseCtrl {
 
   model = User;
+  projection = '_id username email';
 
   login = (req, res) => {
     this.model.findOne({ email: req.body.email, provider: 'local' }, (err, user) => {

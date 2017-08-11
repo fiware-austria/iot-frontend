@@ -1,6 +1,7 @@
 abstract class BaseCtrl {
 
   abstract model: any;
+  abstract projection: string;
 
 
   // Get all
@@ -11,6 +12,10 @@ abstract class BaseCtrl {
     });
   };
 
+  getList = (req, res) =>
+    this.model.find({}, this.projection)
+      .then(l => res.json(l))
+      .catch(err => res.status(500).json({message: err}));
 
   load = (req, res, next, id) =>
     this.model.findById(id)
