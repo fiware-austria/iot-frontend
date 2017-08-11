@@ -90,9 +90,9 @@
     "transform": {
       "^.+\\.(ts|tsx)$": "<rootDir>/preprocessor.js"
     },
-    "testRegex": "(test/.*|\\.(test))\\.(tsx?|jsx?)$",
+    "testRegex": "(test/.*\\.(test|spec))\\.(tsx?|jsx?)$",
     "roots": [
-      "test-out-tsc",
+      "test",
       "server"
     ]
   },

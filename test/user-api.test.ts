@@ -7,12 +7,13 @@ import User from '../server/models/user';
 import * as Bluebird from 'bluebird';
 import {IUser} from '../server/models/types';
 import * as jwt from 'jsonwebtoken';
+import {createUsers, saveUsers } from './helpers';
+dotenv.load({path: '.env.test'});
 
 mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
 const db = mongoose.connection;
 (<any>mongoose).Promise = Bluebird;
 
-dotenv.load({path: '.env.test'});
 
 const clearDB = () => Promise.all([User.remove(), Cat.remove()]);
 const getToken = (user: IUser) => jwt.sign({ user: user }, process.env.SECRET_TOKEN);
@@ -24,25 +25,6 @@ beforeAll(done => {
   db.once('open', done);
 });
 
-const range = (size: number): Array<number> => {
-  const result = Array<number>(size);
-  for (let i = 0; i < size; i += 1) {
-    result[i] = i + 1;
-  }
-  return result;
-};
-
-const createUsers = (number, prefix = 'user', role = 'user'): Array<IUser> =>
-  range(number).map(nr => ({
-    username: `${prefix}${nr}`,
-    email: `${prefix}${nr}@test.com`,
-    password: 'topsecret',
-    provider: 'local',
-    role : role
-  }));
-
-const saveUsers = (users: Array<IUser>) =>
-  Promise.all(users.map(u => new User(u).save()));
 
 beforeEach(async () => await clearDB());
 
