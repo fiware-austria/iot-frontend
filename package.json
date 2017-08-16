@@ -16,7 +16,7 @@
     "lint": "ng lint",
     "lintbe": "tslint server/**/**.ts{,x}",
     "e2e": "ng e2e",
-    "test-srv": "jest --watch",
+    "test-srv": "jest --runInBand --watch",
     "compile-tests": "tsc -w -p test"
   },
   "private": true,
@@ -67,7 +67,7 @@
     "concurrently": "^3.3.0",
     "jasmine-core": "~2.6.2",
     "jasmine-spec-reporter": "~4.1.0",
-    "jest": "*",
+    "jest": "^20.0.4",
     "jest-preset-angular": "^2.0.5",
     "karma": "~1.7.0",
     "karma-chrome-launcher": "~2.1.1",
@@ -94,7 +94,7 @@
     },
     "testRegex": "(test/.*\\.(test|spec))\\.(tsx?|jsx?)$",
     "roots": [
-      "test",
+      "test-out-tsc",
       "server"
     ]
   },

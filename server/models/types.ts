@@ -29,7 +29,7 @@ export interface IPOI {
     type?: string,
     coordinates: [number]
   },
-  creator: any
+  creator?: any
   createdAt?: Date
 }
 

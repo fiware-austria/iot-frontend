@@ -5,4 +5,11 @@ import POI from '../models/poi';
 export default class POICtrl extends BaseCtrl {
   model = POI;
   projection: '_id, name, creator, createdAt';
+
+  insert = (req, res) => {
+    const obj = new this.model(req.body);
+    obj.creator = req.user._id;
+    obj.save().then(m => res.json(m))
+      .catch(err => res.status(err.code === 11000 ? 400 : 500).json({message: err}));
+  }
 }

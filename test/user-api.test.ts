@@ -15,18 +15,12 @@ const db = mongoose.connection;
 (<any>mongoose).Promise = Bluebird;
 
 
-const clearDB = () => Promise.all([User.remove(), Cat.remove()]);
+const clearDB = () => User.remove();
 const getToken = (user: IUser) => jwt.sign({ user: user }, process.env.SECRET_TOKEN);
-
-beforeAll(done => {
-  console.log('Setting up Database Connection');
-
-  db.on('error', done);
-  db.once('open', done);
-});
 
 
 beforeEach(async () => await clearDB());
+afterEach(async () => await clearDB());
 
 describe('Create new Users', () => {
   it('should be possible to register as a new user, but the role always needs to be \'user\'', async () => {
@@ -58,12 +52,15 @@ describe('Reading user profiles', () => {
   });
 
   it('should be allowed for admins to list users', async () => {
-    const savedUsers = await saveUsers(createUsers(4));
-    const savedAdmins = await saveUsers(createUsers(1, 'admin', 'admin'));
-    const listUsersResponse = await supertest(app).get('/api/users')
-      .set('Authorization', `Bearer ${getToken(savedAdmins[0])}`);
-    expect(listUsersResponse.status).toBe(200);
-    expect(listUsersResponse.body).toHaveLength(5);
+      const savedUsers = await saveUsers(createUsers(4));
+      const savedAdmins = await saveUsers(createUsers(1, 'admin', 'admin'));
+      const listUsersResponse = await supertest(app).get('/api/users')
+        .set('Authorization', `Bearer ${getToken(savedAdmins[0])}`);
+      console.log('GOT THE RESPONSE STATUS:' + JSON.stringify(listUsersResponse.body));
+      console.log('GOT THE RESPONSE BODY:' + listUsersResponse.status);
+      expect(listUsersResponse.status).toBe(200);
+      expect(listUsersResponse.body).toHaveLength(5);
+      console.log('I AM DONE WITH IT');
   });
 
   it('should not be possible to read a profile without authentication', async () => {
@@ -90,7 +87,7 @@ describe('Reading user profiles', () => {
     expect(showProfileReponse.body._id.toString()).toBe(savedUsers[0]._id.toString());
   });
 
-  it('should not be possible for admins to read any profile', async () => {
+  it('should be possible for admins to read any profile', async () => {
     const savedUsers = await saveUsers(createUsers(1));
     const savedAdmins = await saveUsers(createUsers(1, 'admin', 'admin'));
     const showProfileReponse = await supertest(app)
