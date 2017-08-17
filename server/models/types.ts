@@ -40,21 +40,3 @@ export interface IUserDocument extends IUser, mongoose.Document {
 export interface IUserModel extends IUser, mongoose.Model<IUserDocument> {
   findOrCreate: (user: GitHubUser) => Promise<IUserDocument>;
 }
-
-
-export interface IPOI {
-  name: string,
-  description?: string,
-  loc: {
-    type?: string,
-    coordinates: Array<number>
-  },
-  creator?: any
-  createdAt?: Date
-}
-
-export interface IPOIDocument extends IPOI, mongoose.Document {
-  _id: mongoose.Schema.Types.ObjectId;
-}
-
-export interface IPOIModel extends IPOI, mongoose.Model<IPOIDocument>, LoadableDocument<IPOIDocument> {}

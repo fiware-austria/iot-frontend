@@ -7,7 +7,7 @@ import User from './models/user';
 import {PassportStatic} from 'passport';
 import {Application} from 'express';
 import * as jwt from 'jsonwebtoken';
-import POICtrl from './controllers/poi';
+
 
 
 
@@ -17,7 +17,7 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
 
   const catCtrl = new CatCtrl();
   const userCtrl = new UserCtrl();
-  const poiCtrl = new POICtrl();
+
 
   const jwtAuth = passport.authenticate('jwt', { session: false});
   const isOwner = (extractor: (Request) => string) =>
@@ -58,12 +58,6 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
   router.route('/user/:userId').delete(jwtAuth, checkPermission(isAdmin), userCtrl.delete);
 
   router.param('userId', userCtrl.load);
-
-  // POIs
-  router.route('/poi').post(jwtAuth, poiCtrl.insert);
-  router.route('/poi/:poiId').delete(jwtAuth, checkPermission(isAdminOrOwner(poiOwner)), poiCtrl.delete);
-  router.route('/poi/:poiId').put(jwtAuth, checkPermission(isOwner(poiOwner)), poiCtrl.updatePOI);
-  router.param('poiId', poiCtrl.load);
 
   // GitHub Login
   router.route('/auth/github').get(

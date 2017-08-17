@@ -1,5 +1,4 @@
 import * as mongoose from 'mongoose';
-import {LoadableDocument} from "../models/types";
 
 abstract class BaseCtrl<T extends mongoose.Document> {
 
@@ -40,7 +39,6 @@ abstract class BaseCtrl<T extends mongoose.Document> {
   insert = (req, res) => {
     const obj = new this.model(req.body);
     obj.save()
-      .then(m => (this.model.hasOwnProperty('load')) ? this.model['load'](m._id) : m)
       .then(m => res.json(m))
       .catch(err => res.status(err.code === 11000 ? 400 : 500).json({message: err}));
   };
@@ -55,7 +53,6 @@ abstract class BaseCtrl<T extends mongoose.Document> {
   // Update by id
   update = (req, res) =>
     this.model.findOneAndUpdate({ _id: req[this.model.collection.collectionName]._id }, req.body, {new: true})
-      .then(m => (this.model.hasOwnProperty('load')) ? this.model['load'](m._id) : m)
       .then(m => res.json(m))
       .catch(err => {
         console.error(err);

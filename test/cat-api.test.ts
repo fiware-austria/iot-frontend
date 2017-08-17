@@ -13,9 +13,6 @@ import {createUsers, range, saveUsers, getToken} from './helpers';
 mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
 const db = mongoose.connection;
 
-
-
-
 const createCats = (number) =>
   range(number).map(nr => ({
     name: `Cat${nr}`,
@@ -29,8 +26,6 @@ const clearDB = () => Promise.all([Cat.remove({}), User.remove({})]);
 beforeEach(async () => await clearDB());
 
 afterAll(async () => await clearDB());
-
-
 
 
 describe('GET /api/cats', () => {
