@@ -58,19 +58,3 @@ export interface IPOIDocument extends IPOI, mongoose.Document {
 }
 
 export interface IPOIModel extends IPOI, mongoose.Model<IPOIDocument>, LoadableDocument<IPOIDocument> {}
-
-export interface ITrip {
-  name: string,
-  description: string,
-  begin: Date,
-  end: Date,
-  createdAt?: Date,
-  creator?: any,
-  pois: [IPOI]
-}
-
-export interface ITripDocument extends ITrip, mongoose.Document {
-  _id: mongoose.Schema.Types.ObjectId;
-}
-
-export interface ITripModel extends ITrip, mongoose.Model<ITripDocument>, LoadableDocument<ITripDocument> {}
