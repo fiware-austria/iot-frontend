@@ -20,17 +20,13 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
   const poiCtrl = new POICtrl();
 
   const jwtAuth = passport.authenticate('jwt', { session: false});
-  const isOwner = (extractor: (Request) => string) => (req) => JSON.stringify(req.user._id) === JSON.stringify(extractor(req));
+  const isOwner = (extractor: (Request) => string) =>
+    (req) => JSON.stringify(req.user._id) === JSON.stringify(extractor(req));
   const isAdmin = (req) => req.user.role === 'admin';
   const isAdminOrOwner = (extractor: (Request) => string) => (req) => isAdmin(req) || isOwner(extractor)(req);
-  const checkPermission = condition => (req, res, next) => {
-    try {
-      console.log('Will I allow this request?: ' + condition(req));
-      condition(req) ? next() : res.status(403).send();
-    } catch (e) {
-      res.status(500).send(JSON.stringify(e));
-    }
-  };
+  const checkPermission = condition => (req, res, next) =>
+    condition(req) ? next() : res.status(403).send();
+
   const userId = r => r.users._id;
   const poiOwner = r => r.pois.creator;
 
@@ -65,7 +61,7 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
   // POIs
   router.route('/poi').post(jwtAuth, poiCtrl.insert);
   router.route('/poi/:poiId').delete(jwtAuth, checkPermission(isAdminOrOwner(poiOwner)), poiCtrl.delete);
-  router.route('/poi/:poiId').put(jwtAuth, checkPermission(isOwner(poiOwner)), poiCtrl.update);
+  router.route('/poi/:poiId').put(jwtAuth, checkPermission(isOwner(poiOwner)), poiCtrl.updatePOI);
   router.param('poiId', poiCtrl.load);
 
   // GitHub Login

@@ -94,7 +94,7 @@
     },
     "testRegex": "(test/.*\\.(test|spec))\\.(tsx?|jsx?)$",
     "roots": [
-      "test-out-tsc",
+      "test",
       "server"
     ]
   },

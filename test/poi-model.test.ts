@@ -5,7 +5,7 @@ import User from '../server/models/user';
 import POI from '../server/models/poi';
 import * as Bluebird from 'bluebird';
 import {createUsers, range, saveUsers, getToken} from './helpers';
-import {IPOI, IPOIModel} from "../server/models/types";
+import {IPOI, IPOIModel} from '../server/models/types';
 
 dotenv.load({path: '.env.test'});
 mongoose.Promise = Bluebird;

@@ -12,4 +12,10 @@ export default class POICtrl extends BaseCtrl {
     obj.save().then(m => res.json(m))
       .catch(err => res.status(err.code === 11000 ? 400 : 500).json({message: err}));
   }
+
+  updatePOI = (req, res) => {
+    req.body.creator = req.user._id;
+    req.body.loc.type = 'Point';
+    this.update(req, res);
+  }
 }
