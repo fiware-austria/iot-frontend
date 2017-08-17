@@ -27,7 +27,7 @@ userSchema.pre('save', function(next) {
 });
 
 
-userSchema.statics.findOrCreate = function(user: GitHubUser): IUser {
+userSchema.statics.findOrCreate = function(user: GitHubUser): IUserDocument {
   const email = user.emails.find(m => m.primary).value;
   const self = this;
   return this.findOne({email: email})

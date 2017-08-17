@@ -50,7 +50,6 @@ describe('POST /api/cat', () => {
   it('should create a new Cat if the current user is logged in', async () => {
     // aconsole.log(`Using token: ${userJWT}`);
     const savedUser = await saveUsers(createUsers(1, 'catlover'));
-    console.log(savedUser);
     const loginResponse = await supertest(app)
       .post('/api/cat')
       .set('Authorization', `Bearer ${getToken(savedUser[0])}`)
