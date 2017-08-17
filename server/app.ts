@@ -6,7 +6,7 @@ import * as morgan from 'morgan';
 import * as path from 'path';
 
 import setRoutes from './routes';
-import * as dotenv from 'dotenv';
+// import * as dotenv from 'dotenv';
 
 import {Strategy, ExtractJwt} from 'passport-jwt';
 import * as github from 'passport-github';
@@ -15,7 +15,7 @@ import * as passport from 'passport';
 import User from './models/user';
 import chatRoutes from './chat-routes';
 
-dotenv.load('.env');
+// dotenv.load('.env');
 
 const jwtOpts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer'),

@@ -1,18 +1,17 @@
-import * as supertest from 'supertest';
 import * as dotenv from 'dotenv';
 import * as mongoose from 'mongoose';
 import User from '../server/models/user';
 import POI from '../server/models/poi';
 import * as Bluebird from 'bluebird';
-import {createUsers, range, saveUsers, getToken} from './helpers';
-import {IPOI, IPOIModel} from '../server/models/types';
+import {createAndSaveUsers, createAndSavePOIs} from './helpers';
+import {IPOI, IPOIDocument} from '../server/models/types';
 
 dotenv.load({path: '.env.test'});
-mongoose.Promise = Bluebird;
+// mongoose.Promise = Bluebird;
 mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
 const db = mongoose.connection;
 
-const clearDB = () => Promise.all([User.remove(), POI.remove()]);
+const clearDB = () => Promise.all([User.remove({}), POI.remove({})]);
 
 beforeEach(async () => await clearDB());
 afterEach(async () => await clearDB());
@@ -33,7 +32,7 @@ describe('POI Model', () => {
     }
   });
   it('should store a POI', async () => {
-    const savedUsers = await saveUsers(createUsers(1));
+    const savedUsers = await createAndSaveUsers(1);
     const poi: IPOI = {
       name: 'POI1',
       loc: {coordinates: [1, 1]},
@@ -47,14 +46,14 @@ describe('POI Model', () => {
     expect(savedPOI.creator).toEqual(savedUsers[0]._id);
   });
   it('should resvole the creator when retrieved with load', async () => {
-    const savedUsers = await saveUsers(createUsers(1));
+    const savedUsers = await createAndSaveUsers(1);
     const poi: IPOI = {
       name: 'POI1',
       loc: {coordinates: [1, 1]},
       creator: savedUsers[0]._id
     };
     const savedPOI = await new POI(poi).save();
-    const readPOI: IPOIModel = await POI.load(savedPOI._id);
+    const readPOI: IPOIDocument = await POI.load(savedPOI._id);
     expect(readPOI._id).toBeDefined();
     expect(readPOI.createdAt).toBeDefined()
     expect(readPOI.name).toBe('POI1');

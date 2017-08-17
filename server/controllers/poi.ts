@@ -1,8 +1,9 @@
 import BaseCtrl from './base';
 import POI from '../models/poi';
+import {IPOIDocument } from '../models/types';
 
 
-export default class POICtrl extends BaseCtrl {
+export default class POICtrl extends BaseCtrl<IPOIDocument> {
   model = POI;
   projection: '_id, name, creator, createdAt';
 

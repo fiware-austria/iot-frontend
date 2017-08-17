@@ -3,8 +3,9 @@ import * as jwt from 'jsonwebtoken';
 
 import User from '../models/user';
 import BaseCtrl from './base';
+import {IUserDocument} from '../models/types';
 
-export default class UserCtrl extends BaseCtrl {
+export default class UserCtrl extends BaseCtrl<IUserDocument> {
 
   model = User;
   projection = '_id username email';

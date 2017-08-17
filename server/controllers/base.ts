@@ -1,6 +1,9 @@
-abstract class BaseCtrl {
+import * as mongoose from 'mongoose';
+import {LoadableDocument} from "../models/types";
 
-  abstract model: any;
+abstract class BaseCtrl<T extends mongoose.Document> {
+
+  abstract model: mongoose.Model<T>;
   abstract projection: string;
 
 
@@ -19,7 +22,9 @@ abstract class BaseCtrl {
 
   load = (req, res, next, id) =>
     this.model.findById(id)
-      .then(m => req[this.model.collection.collectionName] = m)
+      .then(m => {
+        if (m == null) {throw new Error('Element not found')};
+        req[this.model.collection.collectionName] = m})
       .then(() => next())
       .catch(err => res.status(500).json({message: `Could not load this element (${err})`}));
 
@@ -27,14 +32,16 @@ abstract class BaseCtrl {
 
   // Count all
   count = (req, res) => {
-    this.model.count().then(count => res.json(count)
+    this.model.count({}).then(count => res.json(count)
       .catch(err => res.status(500).json({message: err})));
   };
 
   // Insert
   insert = (req, res) => {
     const obj = new this.model(req.body);
-    obj.save().then(m => res.json(m))
+    obj.save()
+      .then(m => (this.model.hasOwnProperty('load')) ? this.model['load'](m._id) : m)
+      .then(m => res.json(m))
       .catch(err => res.status(err.code === 11000 ? 400 : 500).json({message: err}));
   };
 
@@ -48,6 +55,7 @@ abstract class BaseCtrl {
   // Update by id
   update = (req, res) =>
     this.model.findOneAndUpdate({ _id: req[this.model.collection.collectionName]._id }, req.body, {new: true})
+      .then(m => (this.model.hasOwnProperty('load')) ? this.model['load'](m._id) : m)
       .then(m => res.json(m))
       .catch(err => {
         console.error(err);

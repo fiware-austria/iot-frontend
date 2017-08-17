@@ -29,6 +29,7 @@
     "@angular/platform-browser": "^4.0.0",
     "@angular/platform-browser-dynamic": "^4.0.0",
     "@angular/router": "^4.0.0",
+    "@types/mongoose": "^4.7.20",
     "@types/passport-jwt": "^2.0.22",
     "@types/socket.io": "^1.4.29",
     "@types/socket.io-client": "^1.4.29",

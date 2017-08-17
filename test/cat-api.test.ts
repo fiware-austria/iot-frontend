@@ -1,14 +1,15 @@
 import * as supertest from 'supertest';
 import * as dotenv from 'dotenv';
+dotenv.load({path: '.env.test'});
 import * as mongoose from 'mongoose';
 import {app} from '../server/app';
 import Cat from '../server/models/cat';
 import User from '../server/models/user';
 import * as Bluebird from 'bluebird';
 import {createUsers, range, saveUsers, getToken} from './helpers';
-dotenv.load({path: '.env.test'});
 
-mongoose.Promise = Bluebird;
+
+(<any>mongoose).Promise = Bluebird;
 mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
 const db = mongoose.connection;
 
@@ -23,7 +24,7 @@ const createCats = (number) =>
   }));
 
 
-const clearDB = () => Promise.all([Cat.remove(), User.remove()]);
+const clearDB = () => Promise.all([Cat.remove({}), User.remove({})]);
 
 beforeEach(async () => await clearDB());
 

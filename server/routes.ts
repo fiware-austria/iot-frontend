@@ -2,6 +2,7 @@ import * as express from 'express';
 
 import CatCtrl from './controllers/cat';
 import UserCtrl from './controllers/user';
+import TripCtrl from './controllers/trip';
 import Cat from './models/cat';
 import User from './models/user';
 import {PassportStatic} from 'passport';
@@ -18,6 +19,7 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
   const catCtrl = new CatCtrl();
   const userCtrl = new UserCtrl();
   const poiCtrl = new POICtrl();
+  const tripCtrl = new TripCtrl();
 
   const jwtAuth = passport.authenticate('jwt', { session: false});
   const isOwner = (extractor: (Request) => string) =>
@@ -29,6 +31,7 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
 
   const userId = r => r.users._id;
   const poiOwner = r => r.pois.creator;
+  const tripOwner = r => r.trips.creator;
 
   const protectRole = (req, res, next) => {
     if (!isAdmin(req)) {
@@ -63,6 +66,11 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
   router.route('/poi/:poiId').delete(jwtAuth, checkPermission(isAdminOrOwner(poiOwner)), poiCtrl.delete);
   router.route('/poi/:poiId').put(jwtAuth, checkPermission(isOwner(poiOwner)), poiCtrl.updatePOI);
   router.param('poiId', poiCtrl.load);
+
+  // Trips
+  router.route('/trip').post(jwtAuth, tripCtrl.preserveOwnerShip, tripCtrl.insert);
+  router.route('/trip/:tripId').put(jwtAuth, checkPermission(isOwner(tripOwner)), tripCtrl.preserveOwnerShip, tripCtrl.update);
+  router.param('tripId', tripCtrl.load);
 
   // GitHub Login
   router.route('/auth/github').get(

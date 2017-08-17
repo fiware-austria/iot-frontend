@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcryptjs';
 import * as mongoose from 'mongoose';
-import {GitHubUser, IUser} from './types';
+import {GitHubUser, IUser, IUserDocument} from './types';
 import * as Email from 'mongoose-type-email';
 import {IUserModel} from './types';
 
@@ -56,6 +56,6 @@ userSchema.set('toJSON', {
   }
 });
 
-const User = mongoose.model<IUserModel>('User', userSchema);
+const User: IUserModel = mongoose.model<IUserDocument, IUserModel>('User', userSchema);
 
 export default User;

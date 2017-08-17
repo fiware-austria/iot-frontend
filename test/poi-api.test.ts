@@ -1,25 +1,26 @@
 import * as supertest from 'supertest';
 import * as dotenv from 'dotenv';
+dotenv.load({path: '.env.test'});
 import * as mongoose from 'mongoose';
 import {app} from '../server/app';
 import POI from '../server/models/poi';
 import User from '../server/models/user';
 import * as Bluebird from 'bluebird';
-import {IPOI, IPOIModel, IUser} from '../server/models/types';
+import {IPOI, IPOIDocument, IUser} from '../server/models/types';
 import * as jwt from 'jsonwebtoken';
 import {createUsers, saveUsers , getToken} from './helpers';
-dotenv.load({path: '.env.test'});
+
 
 mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
 const db = mongoose.connection;
 (<any>mongoose).Promise = Bluebird;
 
 
-const clearDB = () => Promise.all([User.remove(), POI.remove()]);
+const clearDB = () => Promise.all([User.remove({}), POI.remove({})]);
 
 
 beforeEach(async () => await clearDB());
-afterEach(async () => await clearDB());
+afterAll(async () => await clearDB());
 
 const poi: IPOI = {
   name: 'myPOI',
@@ -39,7 +40,7 @@ describe('Create POIs', () => {
       .set('Authorization', `Bearer ${getToken(savedUsers[0])}`)
       .send(poi);
     expect(createResponse.status).toBe(200);
-    const savedPOI: IPOIModel = createResponse.body;
+    const savedPOI: IPOIDocument = createResponse.body;
     expect(savedPOI._id).toBeDefined();
     expect(savedPOI.name).toBe(poi.name);
     expect(savedPOI.description).toBe(poi.description);
@@ -124,6 +125,6 @@ describe('Update POIs', () => {
       .set('Authorization', `Bearer ${getToken(savedUsers[0])}`).send(poi);
     expect(updateResponse.status).toBe(200);
     expect(updateResponse.body.name).toBe('changed POI');
-    expect(updateResponse.body.creator.toString()).toBe(savedUsers[0]._id.toString());
+    expect(updateResponse.body.creator._id.toString()).toBe(savedUsers[0]._id.toString());
   });
 });

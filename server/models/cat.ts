@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import {ICatDocument} from './types';
 
 const catSchema = new mongoose.Schema({
   name: String,
@@ -6,6 +7,6 @@ const catSchema = new mongoose.Schema({
   age: Number
 });
 
-const Cat = mongoose.model('Cat', catSchema);
+const Cat = mongoose.model<ICatDocument>('Cat', catSchema);
 
 export default Cat;

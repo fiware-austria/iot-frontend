@@ -1,20 +1,19 @@
 import * as supertest from 'supertest';
 import * as dotenv from 'dotenv';
+dotenv.load({path: '.env.test'});
 import * as mongoose from 'mongoose';
 import {app, ioServer} from '../server/app';
 import * as io from 'socket.io-client';
-import Cat from '../server/models/cat';
-import User from '../server/models/user';
-import * as jwt from 'jsonwebtoken';
-import * as Bluebird from 'bluebird';
-import {IUser} from '../server/models/types';
-mongoose.Promise = Bluebird;
+
+
+(<any>mongoose).Promise = global.Promise;
 mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
 const db = mongoose.connection;
 
-let socket: io.Socket;
 
-dotenv.load({path: '.env.test'});
+let socket: SocketIOClient.Socket;
+
+
 
 
 beforeAll(done =>
@@ -24,9 +23,8 @@ afterAll(done => ioServer.close(() => done()));
 
 beforeEach(done => {
   socket = io.connect(`http://localhost:${process.env.WSPORT || 4300}`, {
-    'reconnection delay' : 0
-    , 'reopen delay' : 0
-    , 'force new connection' : true
+    'reconnectionDelay' : 0
+    , 'forceNew' : true
   });
   socket.on('connect', function() {
     console.log('worked...');

@@ -1,5 +1,6 @@
 import * as supertest from 'supertest';
 import * as dotenv from 'dotenv';
+dotenv.load({path: '.env.test'});
 import * as mongoose from 'mongoose';
 import {app} from '../server/app';
 import Cat from '../server/models/cat';
@@ -8,14 +9,14 @@ import * as Bluebird from 'bluebird';
 import {IUser} from '../server/models/types';
 import * as jwt from 'jsonwebtoken';
 import {createUsers, saveUsers } from './helpers';
-dotenv.load({path: '.env.test'});
+
 
 mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
 const db = mongoose.connection;
 (<any>mongoose).Promise = Bluebird;
 
 
-const clearDB = () => User.remove();
+const clearDB = () => User.remove({});
 const getToken = (user: IUser) => jwt.sign({ user: user }, process.env.SECRET_TOKEN);
 
 
@@ -56,18 +57,15 @@ describe('Reading user profiles', () => {
       const savedAdmins = await saveUsers(createUsers(1, 'admin', 'admin'));
       const listUsersResponse = await supertest(app).get('/api/users')
         .set('Authorization', `Bearer ${getToken(savedAdmins[0])}`);
-      console.log('GOT THE RESPONSE STATUS:' + JSON.stringify(listUsersResponse.body));
-      console.log('GOT THE RESPONSE BODY:' + listUsersResponse.status);
       expect(listUsersResponse.status).toBe(200);
       expect(listUsersResponse.body).toHaveLength(5);
-      console.log('I AM DONE WITH IT');
   });
 
   it('should not be possible to read a profile without authentication', async () => {
     const user = createUsers(1)[0];
     const savedUser = await new User(user).save();
-    const showProfileReponse = await supertest(app).get(`/api/user/${savedUser._id}`);
-    expect(showProfileReponse.status).toBe(401);
+    const showProfileResponse = await supertest(app).get(`/api/user/${savedUser._id}`);
+    expect(showProfileResponse.status).toBe(401);
   });
 
   it('should not be possible to read some other user\'s profile', async () => {

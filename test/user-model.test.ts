@@ -1,6 +1,7 @@
 import * as supertest from 'supertest';
 import * as dotenv from 'dotenv';
 import * as mongoose from 'mongoose';
+dotenv.load({path: '.env.test'});
 import {app} from '../server/app';
 import Cat from '../server/models/cat';
 import User from '../server/models/user';
@@ -8,21 +9,12 @@ import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcryptjs';
 import {GitHubUser} from '../server/models/types';
 
-dotenv.load({path: '.env.test'});
+mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
+const db = mongoose.connection;
+(<any>mongoose).Promise = global.Promise;
 
 
-beforeAll(done => {
-  console.log('Setting up Database Connection');
-  mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
-  const db = mongoose.connection;
-  (<any>mongoose).Promise = global.Promise;
-  db.on('error', done);
-  db.once('open', () => done())
-    .then(done)
-    .catch(done);
-});
-
-const clearDB = () => Promise.all([User.remove(), Cat.remove()]);
+const clearDB = () => Promise.all([User.remove({}), Cat.remove({})]);
 
 afterAll(async () => await clearDB());
 
