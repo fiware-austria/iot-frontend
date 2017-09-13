@@ -13,10 +13,12 @@
     "dev": "concurrently  \"ng serve -pc proxy.conf.json --open\" \"tsc -w -p server\" \"nodemon dist/server/server.js\"",
     "prod": "concurrently \"ng build -aot -prod && tsc -p server && node dist/server/server.js\"",
     "test": "jest --watch --config=jest.config.json",
+    "coverage": "jest --coverage --config=jest.config.json",
     "lint": "ng lint",
     "lintbe": "tslint server/**/**.ts{,x}",
     "e2e": "ng e2e",
     "test-srv": "jest --runInBand --watch",
+    "coverage-srv": "jest --runInBand --coverage",
     "compile-tests": "tsc -w -p test"
   },
   "private": true,

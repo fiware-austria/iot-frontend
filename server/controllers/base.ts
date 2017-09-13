@@ -36,24 +36,27 @@ abstract class BaseCtrl<T extends mongoose.Document> {
   };
 
   // Insert
-  insert = (req, res) => {
+  insert = (req, res, next) => {
     const obj = new this.model(req.body);
     obj.save()
-      .then(m => res.json(m))
+      .then(m => req[this.model.collection.collectionName] = m)
+      .then(() => next())
       .catch(err => res.status(err.code === 11000 ? 400 : 500).json({message: err}));
   };
 
   // Get by id
-  get = (req, res) => {
+  get = (req, res, next) => {
     this.model.findOne({ _id: req.params.id })
-      .then(res.json)
+      .then(m => req[this.model.collection.collectionName] = m)
+      .then(() => next())
       .catch(err => res.status(500).json({message: err}));
   };
 
   // Update by id
-  update = (req, res) =>
+  update = (req, res, next) =>
     this.model.findOneAndUpdate({ _id: req[this.model.collection.collectionName]._id }, req.body, {new: true})
-      .then(m => res.json(m))
+      .then(m => req[this.model.collection.collectionName] = m)
+      .then(() => next())
       .catch(err => {
         console.error(err);
         res.status(500).json({message: err});

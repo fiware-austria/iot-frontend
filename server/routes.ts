@@ -43,19 +43,20 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
   // Cats
   router.route('/cats').get(catCtrl.getAll);
   router.route('/cats/count').get(jwtAuth, catCtrl.count);
-  router.route('/cat').post(jwtAuth, catCtrl.insert);
-  router.route('/cat/:id').get(catCtrl.get);
-  router.route('/cat/:id').put(catCtrl.update);
+  router.route('/cat').post(jwtAuth, catCtrl.insert, catCtrl.show);
+  router.route('/cat/:id').get(catCtrl.get, catCtrl.show);
+  router.route('/cat/:id').put(catCtrl.update, catCtrl.show);
   router.route('/cat/:id').delete(catCtrl.delete);
 
   // Users
   router.route('/login').post(userCtrl.login);
   router.route('/users').get(jwtAuth, checkPermission(isAdmin), userCtrl.getAll);
   router.route('/users/count').get(jwtAuth, checkPermission(isAdmin), userCtrl.count);
-  router.route('/user').post(userCtrl.insert);
-  router.route('/user/:userId').get(jwtAuth, checkPermission(isAdminOrOwner(userId)), userCtrl.show);
-  router.route('/user/:userId').put(jwtAuth, checkPermission(isAdminOrOwner(userId)), protectRole, userCtrl.update);
-  router.route('/user/:userId').delete(jwtAuth, checkPermission(isAdmin), userCtrl.delete);
+  router.route('/users').post(userCtrl.insert, userCtrl.show);
+  router.route('/users/:userId').get(jwtAuth, checkPermission(isAdminOrOwner(userId)), userCtrl.show);
+  router.route('/users/:userId').put(jwtAuth, checkPermission(isAdminOrOwner(userId)), protectRole,
+    userCtrl.update, userCtrl.show);
+  router.route('/users/:userId').delete(jwtAuth, checkPermission(isAdmin), userCtrl.delete);
 
   router.param('userId', userCtrl.load);
 
