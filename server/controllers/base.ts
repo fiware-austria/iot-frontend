@@ -31,8 +31,8 @@ abstract class BaseCtrl<T extends mongoose.Document> {
 
   // Count all
   count = (req, res) => {
-    this.model.count({}).then(count => res.json(count)
-      .catch(err => res.status(500).json({message: err})));
+    this.model.count({}).then(count => res.json(count))
+      .catch(err => res.status(500).json({message: err}));
   };
 
   // Insert
