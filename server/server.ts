@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 import * as mongoose from 'mongoose';
-import {app, ioServer} from './app';
 dotenv.load({ path: '.env' });
+import {app, ioServer} from './app';
 mongoose.connect(process.env.MONGODB_URI, { useMongoClient: true});
 const db = mongoose.connection;
 (<any>mongoose).Promise = global.Promise;
