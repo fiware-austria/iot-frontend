@@ -70,7 +70,7 @@
     "concurrently": "^3.3.0",
     "jasmine-core": "~2.6.2",
     "jasmine-spec-reporter": "~4.1.0",
-    "jest": "^20.0.4",
+    "jest": "^21.1.0",
     "jest-preset-angular": "^2.0.5",
     "karma": "~1.7.0",
     "karma-chrome-launcher": "~2.1.1",
