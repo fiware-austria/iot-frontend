@@ -13,7 +13,7 @@ export class UserService {
   constructor(private http: Http) { }
 
   register(user): Observable<any> {
-    return this.http.post('/api/user', JSON.stringify(user), this.options);
+    return this.http.post('/api/users', JSON.stringify(user), this.options);
   }
 
   login(credentials): Observable<any> {
