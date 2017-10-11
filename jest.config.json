@@ -8,5 +8,6 @@
       "tsConfigFile": "client/tsconfig.spec.json"
     },
     "__TRANSFORM_HTML__": true
-  }
+  },
+  "moduleNameMapper": null
 }
