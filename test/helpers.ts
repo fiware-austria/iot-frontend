@@ -4,13 +4,8 @@ import User from '../server/models/user';
 import * as jwt from 'jsonwebtoken';
 
 
-export const range = (size: number): Array<number> => {
-  const result = Array<number>(size);
-  for (let i = 0; i < size; i += 1) {
-    result[i] = i + 1;
-  }
-  return result;
-};
+export const range = (size: number): Array<number> =>
+  Array.from(new Array(size + 1).keys()).slice(1);
 
 export const createUsers = (number, prefix = 'user', role = 'user'): Array<IUser> =>
   range(number).map(nr => ({
