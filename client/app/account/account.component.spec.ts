@@ -4,13 +4,13 @@ import { AccountComponent } from './account.component';
 import {SharedModule} from "../shared/shared.module";
 import {AuthService} from "../services/auth.service";
 import {UserService} from "../services/user.service";
-import {Observable} from "rxjs/Rx";
+import { of } from "rxjs";
 
 describe('AccountComponent', () => {
   let component: AccountComponent;
   let fixture: ComponentFixture<AccountComponent>;
   const authServiceStub = {logout: () => 'logout'};
-  const userServiceStub = {getUser: () => Observable.of({})};
+  const userServiceStub = {getUser: () => of({})};
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

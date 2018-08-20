@@ -1,5 +1,5 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { Http, Headers } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { ChatService } from './chat.service';
 
 describe('ChatService', () => {
@@ -9,7 +9,7 @@ describe('ChatService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [ChatService,
-        {provide: Http, useValue: httpStub}]
+        {provide: HttpClient, useValue: httpStub}]
     });
   });
 
