@@ -9,7 +9,7 @@ The frontend is generated with [Angular CLI](https://github.com/angular/angular-
 This project uses the [MEAN stack](https://en.wikipedia.org/wiki/MEAN_(software_bundle)):
 * [**M**ongoose.js](http://www.mongoosejs.com) ([MongoDB](https://www.mongodb.com)): database
 * [**E**xpress.js](http://expressjs.com): backend framework
-* [**A**ngular 4](https://angular.io): frontend framework
+* [**A**ngular 6](https://angular.io): frontend framework
 * [**N**ode.js](https://nodejs.org): runtime environment
 
 Other tools and technologies used:
@@ -17,7 +17,7 @@ Other tools and technologies used:
 * [Bootstrap](http://www.getbootstrap.com): layout and styles
 * [Font Awesome](http://fontawesome.io): icons
 * [JSON Web Token](https://jwt.io): user authentication
-* [Angular 2 JWT](https://github.com/auth0/angular2-jwt): JWT helper for Angular
+* [Angular JWT](https://github.com/auth0/angular-jwt): JWT helper for Angular
 * [Bcrypt.js](https://github.com/dcodeIO/bcrypt.js): password encryption
 * [Passport](http://passportjs.org/): various authentication strategies
 * [Jest](https://facebook.github.io/jest/): delightful JavaScript testing

@@ -10,7 +10,7 @@ import {createUsers, range, saveUsers, getToken} from './helpers';
 
 
 (<any>mongoose).Promise = Bluebird;
-mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
+mongoose.connect(process.env.MONGODB_URI,  { useNewUrlParser: true } );
 const db = mongoose.connection;
 
 const createCats = (number) =>
@@ -21,7 +21,7 @@ const createCats = (number) =>
   }));
 
 
-const clearDB = () => Promise.all([Cat.remove({}), User.remove({})]);
+const clearDB = () => Promise.all([Cat.deleteMany({}), User.deleteMany({})]);
 
 beforeEach(async () => await clearDB());
 

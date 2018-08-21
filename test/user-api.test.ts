@@ -11,12 +11,12 @@ import * as jwt from 'jsonwebtoken';
 import {createUsers, saveUsers } from './helpers';
 
 
-mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true } );
 const db = mongoose.connection;
 (<any>mongoose).Promise = Bluebird;
 
 
-const clearDB = () => User.remove({});
+const clearDB = () => User.deleteMany({});
 const getToken = (user: IUser) => jwt.sign({ user: user }, process.env.SECRET_TOKEN);
 
 

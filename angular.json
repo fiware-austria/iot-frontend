@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "angular2-full-stack": {
+    "angular6-full-stack": {
       "root": "",
       "sourceRoot": "client",
       "projectType": "application",
@@ -54,18 +54,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "angular2-full-stack:build"
+            "browserTarget": "angular6-full-stack:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "angular2-full-stack:build:production"
+              "browserTarget": "angular6-full-stack:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "angular2-full-stack:build"
+            "browserTarget": "angular6-full-stack:build"
           }
         },
         "test": {
@@ -103,7 +103,7 @@
         }
       }
     },
-    "angular2-full-stack-e2e": {
+    "angular6-full-stack-e2e": {
       "root": "e2e",
       "sourceRoot": "e2e",
       "projectType": "application",
@@ -112,7 +112,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "angular2-full-stack:serve"
+            "devServerTarget": "angular6-full-stack:serve"
           }
         },
         "lint": {
@@ -127,7 +127,7 @@
       }
     }
   },
-  "defaultProject": "angular2-full-stack",
+  "defaultProject": "angular6-full-stack",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",
