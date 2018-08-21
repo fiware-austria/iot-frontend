@@ -28,8 +28,6 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
     condition(req) ? next() : res.status(403).send();
 
   const userId = r => r.users._id;
-  const poiOwner = r => r.pois.creator;
-  const tripOwner = r => r.trips.creator;
 
   const protectRole = (req, res, next) => {
     if (!isAdmin(req)) {
