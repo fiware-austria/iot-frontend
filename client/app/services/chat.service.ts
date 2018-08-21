@@ -1,17 +1,15 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers } from '@angular/http';
-import 'rxjs/add/operator/map';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class ChatService {
 
-  constructor(private http: Http) { }
+  constructor(private http: HttpClient) { }
 
   getChatByRoom(room) {
     return new Promise((resolve, reject) => {
-      this.http.get('/api/chat/' + room)
-        .map(res => res.json())
-        .subscribe(res => {
+      this.http.get('/api/chat/' + room).toPromise()
+        .then(res => {
           resolve(res);
         }, (err) => {
           reject(err);
@@ -21,9 +19,8 @@ export class ChatService {
 
   saveChat(data) {
     return new Promise((resolve, reject) => {
-      this.http.post('/api/chat', data)
-        .map(res => res.json())
-        .subscribe(res => {
+      this.http.post('/api/chat', data).toPromise()
+        .then(res => {
           resolve(res);
         }, (err) => {
           reject(err);

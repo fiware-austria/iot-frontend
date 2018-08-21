@@ -16,11 +16,11 @@ export const createUsers = (number, prefix = 'user', role = 'user'): Array<IUser
     role : role
   }));
 
-export const saveUsers = (users: Array<IUser>): Promise<[IUserDocument]> =>
+export const saveUsers = (users: Array<IUser>): Promise<IUserDocument[]> =>
   Promise.all(users.map(u => new User(u).save()));
 
 export const createAndSaveUsers =
-  (number, prefix = 'user', role = 'user'): Promise<[IUserDocument]>  =>
+  (number, prefix = 'user', role = 'user'): Promise<IUserDocument[]>  =>
     saveUsers(createUsers(number, prefix, role));
 
 export const getToken = (user: IUser) => jwt.sign({ user: user }, process.env.SECRET_TOKEN);

@@ -1,16 +1,17 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AdminComponent } from './admin.component';
-import {SharedModule} from "../shared/shared.module";
-import {AuthService} from "../services/auth.service";
-import {UserService} from "../services/user.service";
-import {Observable} from "rxjs/Rx";
+import {SharedModule} from '../shared/shared.module';
+import {AuthService} from '../services/auth.service';
+import {UserService} from '../services/user.service';
+import { of } from 'rxjs';
+
 
 describe('AdminComponent', () => {
   let component: AdminComponent;
   let fixture: ComponentFixture<AdminComponent>;
   const authServiceStub = {logout: () => 'logout'};
-  const userServiceStub = {getUsers: () => Observable.of([])};
+  const userServiceStub = {getUsers: () => of([])};
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

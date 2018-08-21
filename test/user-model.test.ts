@@ -9,7 +9,7 @@ import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcryptjs';
 import {GitHubUser} from '../server/models/types';
 
-mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
+mongoose.connect(process.env.MONGODB_URI,  { useNewUrlParser: true } );
 const db = mongoose.connection;
 (<any>mongoose).Promise = global.Promise;
 
