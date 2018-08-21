@@ -10,7 +10,7 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
   register(user: User): Observable<User> {
-    return this.http.post<User>('/api/user', user);
+    return this.http.post<User>('/api/users', user);
   }
 
   login(credentials): Promise<any> {
@@ -26,19 +26,19 @@ export class UserService {
   }
 
   addUser(user: User): Observable<User> {
-    return this.http.post<User>('/api/user', user);
+    return this.http.post<User>('/api/users', user);
   }
 
   getUser(user: User): Observable<User> {
-    return this.http.get<User>(`/api/user/${user._id}`);
+    return this.http.get<User>(`/api/users/${user._id}`);
   }
 
   editUser(user: User): Observable<string> {
-    return this.http.put(`/api/user/${user._id}`, user, { responseType: 'text' });
+    return this.http.put(`/api/users/${user._id}`, user, { responseType: 'text' });
   }
 
   deleteUser(user: User): Observable<string> {
-    return this.http.delete(`/api/user/${user._id}`, { responseType: 'text' });
+    return this.http.delete(`/api/users/${user._id}`, { responseType: 'text' });
   }
 
 }
