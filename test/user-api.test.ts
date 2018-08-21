@@ -93,7 +93,8 @@ describe('Reading user profiles', () => {
       .set('Authorization', `Bearer ${getToken(savedAdmins[0])}`);
     expect(showProfileReponse.status).toBe(200);
     expect(showProfileReponse.body._id.toString()).toBe(savedUsers[0]._id.toString());
-  })
+  });
+
 });
 
 describe('Updating user profiles', () => {

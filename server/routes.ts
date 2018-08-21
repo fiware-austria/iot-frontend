@@ -50,9 +50,9 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
 
   // Users
   router.route('/login').post(userCtrl.login);
-  router.route('/users').get(jwtAuth, checkPermission(isAdmin), userCtrl.getAll);
+  router.route('/users').get(jwtAuth, checkPermission(isAdmin), userCtrl.getList);
   router.route('/users/count').get(jwtAuth, checkPermission(isAdmin), userCtrl.count);
-  router.route('/users').post(userCtrl.insert, userCtrl.show);
+  router.route('/users').post(userCtrl.setRoleAndProvider, userCtrl.insert, userCtrl.show);
   router.route('/users/:userId').get(jwtAuth, checkPermission(isAdminOrOwner(userId)), userCtrl.show);
   router.route('/users/:userId').put(jwtAuth, checkPermission(isAdminOrOwner(userId)), protectRole,
     userCtrl.update, userCtrl.show);

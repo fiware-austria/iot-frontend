@@ -21,24 +21,10 @@ export default class UserCtrl extends BaseCtrl<IUserDocument> {
     });
   };
 
-  insert = (req, res) =>  {
-    try {
+  setRoleAndProvider = (req, res, next) =>  {
       req.body.role = 'user';
       req.body.provider = 'local';
-      const obj = new this.model(req.body);
-      obj.save((err, item) => {
-        // 11000 is the code for duplicate key error
-        if (err && err.code === 11000) {
-          res.sendStatus(400);
-        }
-        if (err) {
-          return console.error(err);
-        }
-        res.status(200).json(item);
-      });
-    } catch (err) {
-      res.status(400).json(err)
-    }
+      next();
   }
 
 }
