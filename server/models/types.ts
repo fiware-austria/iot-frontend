@@ -21,11 +21,11 @@ export interface ICatDocument extends ICat, mongoose.Document {
 export interface GitHubUser {
   username: string,
   provider: string,
-  emails: [{
+  emails: {
     value: string,
     primary: boolean,
     verified: boolean
-  }]
+  }[]
 }
 
 
