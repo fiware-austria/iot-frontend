@@ -8,10 +8,11 @@
   "scripts": {
     "ng": "ng",
     "build": "ng build",
+    "buildprod": "ng build --aot=true --prod=true",
     "start": "node dist/server/server.js",
     "predev": "tsc -p server",
     "dev": "concurrently  \"ng serve --proxy-config proxy.conf.json --open\" \"tsc -w -p server\" \"nodemon dist/server/server.js\"",
-    "prod": "concurrently \"ng build -aot -prod && tsc -p server && node dist/server/server.js\"",
+    "prod": "concurrently \"ng build --aot=true --prod=true && tsc -p server && node dist/server/server.js\"",
     "test": "jest --watch --config=jest.config.json",
     "coverage": "jest --coverage --config=jest.config.json",
     "lint": "ng lint",

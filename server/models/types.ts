@@ -59,3 +59,15 @@ export interface IUserDocument extends IUser, mongoose.Document {
 export interface IUserModel extends IUser, mongoose.Model<IUserDocument> {
   findOrCreate: (user: GitHubUser) => Promise<IUserDocument>;
 }
+
+
+export interface ISensorValue {
+  sensorId: string,
+  valueName: string,
+  value: any,
+  timestamp: Date
+}
+
+export interface ISensorValueDocument extends ISensorValue, mongoose.Document {
+  _id: mongoose.Schema.Types.ObjectId;
+}
