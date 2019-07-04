@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 import {ICatDocument} from './types';
 
 const catSchema = new mongoose.Schema({

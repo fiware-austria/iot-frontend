@@ -1,7 +1,7 @@
-import * as supertest from 'supertest';
-import * as dotenv from 'dotenv';
-import * as mongoose from 'mongoose';
-dotenv.load({path: '.env.test'});
+import supertest from 'supertest';
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+dotenv.config({path: '.env.test'});
 import {app} from '../server/app';
 import Cat from '../server/models/cat';
 import User from '../server/models/user';
@@ -14,7 +14,7 @@ const db = mongoose.connection;
 (<any>mongoose).Promise = global.Promise;
 
 
-const clearDB = () => Promise.all([User.remove({}), Cat.remove({})]);
+const clearDB = () => Promise.all([User.deleteMany({}), Cat.deleteMany({})]);
 
 afterAll(async () => await clearDB());
 

@@ -1,6 +1,6 @@
-import * as dotenv from 'dotenv';
-import * as mongoose from 'mongoose';
-dotenv.load({ path: '.env' });
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+dotenv.config({ path: '.env' });
 import {app, ioServer} from './app';
 mongoose.connect(process.env.MONGODB_URI,{ useNewUrlParser: true } );
 const db = mongoose.connection;

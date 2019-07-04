@@ -1,8 +1,8 @@
-import * as express from 'express';
+import express from 'express';
 import * as mongoose from 'mongoose';
 import * as http from 'http';
 import Chat from './models/chat';
-import * as socket from 'socket.io';
+import socket from 'socket.io';
 
 
 export default (app: express.Application) => {

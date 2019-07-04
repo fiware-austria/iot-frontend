@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcryptjs';
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 import {GitHubUser, IUser, IUserDocument} from './types';
-import * as Email from 'mongoose-type-email';
+import Email from 'mongoose-type-email';
 import {IUserModel} from './types';
 
 const userSchema = new mongoose.Schema({

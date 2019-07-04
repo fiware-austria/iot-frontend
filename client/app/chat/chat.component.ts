@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
 import { ChatService } from '../services/chat.service';
-import * as io from 'socket.io-client';
+import io from 'socket.io-client';
 
 @Component({
   selector: 'app-chat',
@@ -9,7 +9,7 @@ import * as io from 'socket.io-client';
 })
 export class ChatComponent implements OnInit, AfterViewChecked {
 
-  @ViewChild('scrollMe') private myScrollContainer: ElementRef;
+  @ViewChild('scrollMe', {static: false}) private myScrollContainer: ElementRef;
 
   chats: any;
   joined = false;

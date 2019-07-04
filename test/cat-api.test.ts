@@ -1,15 +1,15 @@
-import * as supertest from 'supertest';
-import * as dotenv from 'dotenv';
-dotenv.load({path: '.env.test'});
-import * as mongoose from 'mongoose';
+import supertest from 'supertest';
+import dotenv from 'dotenv';
+dotenv.config({path: '.env.test'});
+import mongoose from 'mongoose';
 import {app} from '../server/app';
 import Cat from '../server/models/cat';
 import User from '../server/models/user';
-import * as Bluebird from 'bluebird';
+// import * as Bluebird from 'bluebird';
 import {createUsers, range, saveUsers, getToken} from './helpers';
 
 
-(<any>mongoose).Promise = Bluebird;
+// (<any>mongoose).Promise = Bluebird;
 mongoose.connect(process.env.MONGODB_URI,  { useNewUrlParser: true } );
 const db = mongoose.connection;
 

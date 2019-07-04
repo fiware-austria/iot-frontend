@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
 /*
  The plain Cat entity type completely agnostic of mongoose
@@ -8,6 +8,7 @@ export interface ICat {
   weight: number,
   age: number
 }
+
 
 /*
  This interface represents the document (model instance) returned by

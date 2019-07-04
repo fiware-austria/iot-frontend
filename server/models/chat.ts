@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
 const ChatSchema = new mongoose.Schema({
   room: String,

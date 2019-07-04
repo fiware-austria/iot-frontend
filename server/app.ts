@@ -1,7 +1,7 @@
 import * as bodyParser from 'body-parser';
 
-import * as express from 'express';
-import * as morgan from 'morgan';
+import express from 'express';
+import morgan from 'morgan';
 
 import * as path from 'path';
 
@@ -10,7 +10,7 @@ import setRoutes from './routes';
 
 import {Strategy, ExtractJwt} from 'passport-jwt';
 import * as github from 'passport-github';
-import * as passport from 'passport';
+import passport from 'passport';
 
 import User from './models/user';
 import chatRoutes from './chat-routes';
