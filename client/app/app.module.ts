@@ -56,9 +56,7 @@ export function tokenGetter() {
     AuthService,
     AuthGuardLogin,
     AuthGuardAdmin,
-    CatService,
-    UserService,
-    ChatService
+    UserService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
