@@ -30,7 +30,7 @@ describe('Create new Users', () => {
       email: 'test@test.com',
       passord: 'topsecret'
     };
-    const newUserResponse = await supertest(app).post('/api/users').send(user);
+    const newUserResponse = await supertest(app).post('/users').send(user);
     expect(newUserResponse.status).toBe(200);
     const newUser = newUserResponse.body;
     expect(newUser.provider).toBe('local');
@@ -41,13 +41,13 @@ describe('Create new Users', () => {
 describe('Reading user profiles', () => {
 
   it('should be not allowed for visitors to list users', async () => {
-    const listUsersResponse = await supertest(app).get('/api/users');
+    const listUsersResponse = await supertest(app).get('/users');
     expect(listUsersResponse.status).toBe(401);
   });
 
   it('should be not allowed for non-admins to list users', async () => {
     const savedUsers = await saveUsers(createUsers(1));
-    const listUsersResponse = await supertest(app).get('/api/users')
+    const listUsersResponse = await supertest(app).get('/users')
       .set('Authorization', `Bearer ${getToken(savedUsers[0])}`);
     expect(listUsersResponse.status).toBe(403);
   });
@@ -55,7 +55,7 @@ describe('Reading user profiles', () => {
   it('should be allowed for admins to list users', async () => {
       const savedUsers = await saveUsers(createUsers(4));
       const savedAdmins = await saveUsers(createUsers(1, 'admin', 'admin'));
-      const listUsersResponse = await supertest(app).get('/api/users')
+      const listUsersResponse = await supertest(app).get('/users')
         .set('Authorization', `Bearer ${getToken(savedAdmins[0])}`);
       expect(listUsersResponse.status).toBe(200);
       expect(listUsersResponse.body).toHaveLength(5);
@@ -64,14 +64,14 @@ describe('Reading user profiles', () => {
   it('should not be possible to read a profile without authentication', async () => {
     const user = createUsers(1)[0];
     const savedUser = await new User(user).save();
-    const showProfileResponse = await supertest(app).get(`/api/users/${savedUser._id}`);
+    const showProfileResponse = await supertest(app).get(`/users/${savedUser._id}`);
     expect(showProfileResponse.status).toBe(401);
   });
 
   it('should not be possible to read some other user\'s profile', async () => {
     const savedUsers = await saveUsers(createUsers(2));
     const showProfileReponse = await supertest(app)
-      .get(`/api/users/${savedUsers[1]._id}`)
+      .get(`/users/${savedUsers[1]._id}`)
       .set('Authorization', `Bearer ${getToken(savedUsers[0])}`);
     expect(showProfileReponse.status).toBe(403);
   });
@@ -79,7 +79,7 @@ describe('Reading user profiles', () => {
   it('should be possible to read your own profile', async () => {
     const savedUsers = await saveUsers(createUsers(1));
     const showProfileReponse = await supertest(app)
-      .get(`/api/users/${savedUsers[0]._id}`)
+      .get(`/users/${savedUsers[0]._id}`)
       .set('Authorization', `Bearer ${getToken(savedUsers[0])}`);
     expect(showProfileReponse.status).toBe(200);
     expect(showProfileReponse.body._id.toString()).toBe(savedUsers[0]._id.toString());
@@ -89,7 +89,7 @@ describe('Reading user profiles', () => {
     const savedUsers = await saveUsers(createUsers(1));
     const savedAdmins = await saveUsers(createUsers(1, 'admin', 'admin'));
     const showProfileReponse = await supertest(app)
-      .get(`/api/users/${savedUsers[0]._id}`)
+      .get(`/users/${savedUsers[0]._id}`)
       .set('Authorization', `Bearer ${getToken(savedAdmins[0])}`);
     expect(showProfileReponse.status).toBe(200);
     expect(showProfileReponse.body._id.toString()).toBe(savedUsers[0]._id.toString());
@@ -103,7 +103,7 @@ describe('Updating user profiles', () => {
     const savedUsers = await saveUsers(createUsers(2));
     savedUsers[1].username = 'dummy';
     const profileUpdateResponse = await supertest(app)
-      .put(`/api/users/${savedUsers[1]._id}`)
+      .put(`/users/${savedUsers[1]._id}`)
       .set('Authorization', `Bearer ${getToken(savedUsers[0])}`)
       .send(savedUsers[1]);
     expect(profileUpdateResponse.status).toBe(403);
@@ -113,7 +113,7 @@ describe('Updating user profiles', () => {
     const savedUsers = await saveUsers(createUsers(2));
     savedUsers[1].username = 'dummy';
     const profileUpdateResponse = await supertest(app)
-      .put(`/api/users/${savedUsers[1]._id}`)
+      .put(`/users/${savedUsers[1]._id}`)
       .set('Authorization', `Bearer ${getToken(savedUsers[1])}`)
       .send(savedUsers[1]);
     expect(profileUpdateResponse.status).toBe(200);
@@ -125,7 +125,7 @@ describe('Updating user profiles', () => {
     const savedUsers = await saveUsers(createUsers(2));
     savedUsers[1].role = 'admin';
     const profileUpdateResponse = await supertest(app)
-      .put(`/api/users/${savedUsers[1]._id}`)
+      .put(`/users/${savedUsers[1]._id}`)
       .set('Authorization', `Bearer ${getToken(savedUsers[1])}`)
       .send(savedUsers[1]);
     expect(profileUpdateResponse.status).toBe(200);
@@ -138,7 +138,7 @@ describe('Updating user profiles', () => {
     const savedAdmins = await saveUsers(createUsers(1, 'admin', 'admin'));
     savedUsers[1].role = 'admin';
     const profileUpdateResponse = await supertest(app)
-      .put(`/api/users/${savedUsers[1]._id}`)
+      .put(`/users/${savedUsers[1]._id}`)
       .set('Authorization', `Bearer ${getToken(savedAdmins[0])}`)
       .send(savedUsers[1]);
     expect(profileUpdateResponse.status).toBe(200);
@@ -151,7 +151,7 @@ describe('Deleting users', () => {
   it('should not be possible to delete users if you are not an admin', async () => {
     const savedUsers = await saveUsers(createUsers(1));
     const deleteUserResponse = await supertest(app)
-      .delete(`/api/users/${savedUsers[0]._id}`)
+      .delete(`/users/${savedUsers[0]._id}`)
       .set('Authorization', `Bearer ${getToken(savedUsers[0])}`);
     expect(deleteUserResponse.status).toBe(403);
   });
@@ -159,7 +159,7 @@ describe('Deleting users', () => {
     const savedUsers = await saveUsers(createUsers(1));
     const savedAdmins = await saveUsers(createUsers(1, 'admin', 'admin'));
     const deleteUserResponse = await supertest(app)
-      .delete(`/api/users/${savedAdmins[0]._id}`)
+      .delete(`/users/${savedAdmins[0]._id}`)
       .set('Authorization', `Bearer ${getToken(savedUsers[0])}`);
     expect(deleteUserResponse.status).toBe(403);
   });

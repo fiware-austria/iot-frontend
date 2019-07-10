@@ -16,6 +16,8 @@ const deviceSchema = new mongoose.Schema({
   attributes: [deviceFieldSchema]
 });
 
+deviceSchema.index({device_id: 1});
+
 const Device = mongoose.model<IDeviceDocument>('Device', deviceSchema);
 
 export default Device;

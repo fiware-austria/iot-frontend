@@ -6,6 +6,8 @@ import SensorValueCtrl from './controllers/sensor-value';
 import {PassportStatic} from 'passport';
 import {Application} from 'express';
 import * as jwt from 'jsonwebtoken';
+import DeviceCtrl from './controllers/device';
+import GroupCtrl from './controllers/group';
 
 
 
@@ -17,6 +19,8 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
   const catCtrl = new CatCtrl();
   const userCtrl = new UserCtrl();
   const sensorCtrl = new SensorValueCtrl();
+  const deviceCtrl = new DeviceCtrl();
+  const groupCtrl = new GroupCtrl();
 
 
   const jwtAuth = passport.authenticate('jwt', { session: false});
@@ -37,6 +41,14 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
   };
 
   app.use(passport.initialize());
+
+  // Devices
+  router.route('/iot/devices').post(deviceCtrl.insertBatch);
+  router.route('/iot/devices').get(deviceCtrl.get);
+
+  // Groups
+  router.route('/iot/services').post(groupCtrl.insertBatch);
+  router.route('/iot/services').get(groupCtrl.getAll);
 
   // SensorValues
   router.route('/iot/d').post(sensorCtrl.process);
