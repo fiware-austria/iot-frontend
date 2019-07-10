@@ -9,6 +9,7 @@ export default class UserCtrl extends BaseCtrl<IUserDocument> {
 
   model = User;
   projection = '_id username email';
+  listName = 'users';
 
   login = (req, res) => {
     this.model.findOne({ email: req.body.email, provider: 'local' }, (err, user) => {

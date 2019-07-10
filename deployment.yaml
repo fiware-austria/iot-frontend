@@ -5,7 +5,7 @@ metadata:
   name: sensor-config
 data:
   .env: |
-    MONGODB_URI=mongodb://dbadmn:admin@mongo-shard-cluster-external.mongo:30017/developmentdb?authSource=admin
+    MONGODB_URI=mongodb://dbadmin:admin@mongo-shard-router-svc.mongo:27017/developmentdb?authSource=admin
     #PORT=4200
     SECRET_TOKEN=catswillruletheworld
     GITHUB_CLIENT_ID=302d190373af9cfdbdfe

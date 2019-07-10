@@ -7,6 +7,7 @@ abstract class BaseCtrl<T extends mongoose.Document> {
   // A string representing a space-separated list of field that should be
   // returned by getList()
   abstract projection: string;
+  abstract listName: string;
 
 
   // Get all enities of type model
@@ -61,6 +62,12 @@ abstract class BaseCtrl<T extends mongoose.Document> {
       .then(() => next())
       .catch(err => res.status(err.code === 11000 ? 400 : 500).json({message: err}));
   };
+
+  insertBatch = (req, res, next) => {
+      this.model.insertMany(req.body[this.listName])
+        .then(() => res.status(200).json({message: 'Devices created'}))
+        .catch(err => res.status(500).json({message: err}));
+  }
 
   // Get by id
   get = (req, res, next) => {

@@ -19,6 +19,8 @@ export interface ICatDocument extends ICat, mongoose.Document {
   _id: mongoose.Schema.Types.ObjectId;
 }
 
+
+
 export interface GitHubUser {
   username: string,
   provider: string,
@@ -71,3 +73,37 @@ export interface ISensorValue {
 export interface ISensorValueDocument extends ISensorValue, mongoose.Document {
   _id: mongoose.Schema.Types.ObjectId;
 }
+
+// IDAS group/service
+export interface IGroup {
+  apikey: string,
+  token: string,
+  entity_type: string,
+  resource: string,
+}
+
+export interface IGroupDocument extends IGroup, mongoose.Document {
+  _id: mongoose.Schema.Types.ObjectId;
+}
+
+// IDAS device
+export interface IDeviceField {
+  object_id: string,
+  name: string,
+  type: string
+}
+
+export interface IDevice {
+  device_id: string,
+  entity_name: string,
+  entity_type: string,
+  timezone: string,
+  attributes: [IDeviceField]
+}
+
+export interface IDeviceDocument extends IDevice, mongoose.Document {
+  _id: mongoose.Schema.Types.ObjectId;
+}
+
+
+
