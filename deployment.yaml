@@ -6,7 +6,9 @@ metadata:
 data:
   .env: |
     MONGODB_URI=mongodb://dbadmin:admin@mongo-shard-router-svc.mongo:27017/developmentdb?authSource=admin
-    #PORT=4200
+    STH_PREFIX=sth_
+    # Storage Strategy: ONE_DOCUMENT_PER_VALUE / ONE_DOCUMENT_PER_TRANSACTION
+    STORAGE_STRATEGY=ONE_DOCUMENT_PER_TRANSACTION
     SECRET_TOKEN=catswillruletheworld
     GITHUB_CLIENT_ID=302d190373af9cfdbdfe
     GITHUB_CLIENT_SECRET=1b5250765bdd8b5ab23dd2d1446e9d727f1d367d
@@ -31,7 +33,7 @@ spec:
     spec:
       containers:
         - name: sensor-server
-          image: fhjima/sensor-server:latest
+          image: fiwareaustria/iot-frontend:latest
           ports:
             - containerPort: 3000
               name: api
@@ -69,6 +71,6 @@ spec:
     run: sensor-server
   type: LoadBalancer
 
----
+
 
 

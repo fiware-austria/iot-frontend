@@ -20,8 +20,9 @@ export default class SensorValueCtrl extends BaseCtrl<ISensorValueDocument> {
     Int: parseInt,
     Date: s => new Date(s),
     String: s => s,
-    Location: ([alt, lat]) => [parseFloat(alt), parseFloat(lat)]
-  }
+    Location: s => s.split(',').map(parseFloat)
+  };
+
 
   cache = {};
   insertCache = (key: string, value: any) => this.cache[key] = value;
@@ -29,7 +30,8 @@ export default class SensorValueCtrl extends BaseCtrl<ISensorValueDocument> {
 
 
 
-  parts2Values = (parts: [string], device: ICachedDevice, timestamp: Date ) => {
+
+  oneDocumentPerValue = (parts: [string], device: ICachedDevice, timestamp: Date ) => {
     const values = [];
     for (let i = 0; i < parts.length - 1; i += 2) {
       values.push({
@@ -41,6 +43,23 @@ export default class SensorValueCtrl extends BaseCtrl<ISensorValueDocument> {
       });
     }
     return values;
+  };
+
+  oneDocumentPerTransaction = (parts: [string], device: ICachedDevice, timestamp: Date ) => {
+    const value = {
+      sensorId: device.device_id,
+      timestamp: timestamp,
+      entity_type: device.entity_type
+    };
+    for (let i = 0; i < parts.length - 1; i += 2) {
+        value[device.attributes[parts[i]].name] = this.parsers[device.attributes[parts[i]].type](parts[i + 1])
+    };
+    return [value];
+  };
+
+  storageStrategies = {
+    ONE_DOCUMENT_PER_VALUE: this.oneDocumentPerValue,
+    ONE_DOCUMENT_PER_TRANSACTION: this.oneDocumentPerTransaction
   };
 
 
@@ -67,7 +86,7 @@ export default class SensorValueCtrl extends BaseCtrl<ISensorValueDocument> {
         };
         this.insertCache(device_id, device);
       }
-      const values = this.parts2Values(parts, device, timestamp);
+      const values = this.storageStrategies[process.env.STORAGE_STRATEGY](parts, device, timestamp);
       const result = await mongoose.connection.collection(this.prefix + apikey + '_' + device.entity_type).insertMany(values);
       res.send({message: 'OK'});
     }

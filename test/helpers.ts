@@ -65,6 +65,16 @@ export const createDevices = (number) =>
         'type': 'Float'
       },
       {
+        'object_id': 's',
+        'name': 'status',
+        'type': 'String'
+      },
+      {
+        'object_id': 'l',
+        'name': 'location',
+        'type': 'Location'
+      },
+      {
         'object_id': 'ap2',
         'name': 'mangOHPress',
         'type': 'Float'
