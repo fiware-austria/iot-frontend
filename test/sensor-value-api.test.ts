@@ -17,8 +17,10 @@ import Group from '../server/models/group';
 mongoose.connect(process.env.MONGODB_URI,  { useNewUrlParser: true } );
 const db = mongoose.connection;
 
+const tenant = 'test_tenant';
 
 const randomValue = (min: number, max: number) => Math.round((Math.random() * (max - min) + min) * 100) / 100
+const delay = ms => new Promise(res => setTimeout(res, ms));
 
 const createSensorValues = (number) =>
   range(number).map(nr => ({
@@ -32,8 +34,10 @@ const clearDB = () => Promise.all([
   SensorValue.deleteMany({}),
   User.deleteMany({}),
   Device.deleteMany({}),
-  Group.deleteMany({})
+  Group.deleteMany({}),
+  db.useDb('orion-' + tenant).collection('entities').deleteMany({})
   ]);
+
 
 beforeEach(async () => await clearDB());
 
@@ -47,17 +51,22 @@ describe('POST /api/iot/d', () => {
     process.env.STORAGE_STRATEGY = 'ONE_DOCUMENT_PER_VALUE';
     const sensor = createSensorValues(1)[0];
     const [groups, devices] = await Promise.all([storeGroups(1), storeDevices(3)]);
-    const collectionName = process.env.STH_PREFIX + groups[0].apikey + '_' + devices[1].entity_type;
+    const collectionName = tenant + '_' + process.env.STH_PREFIX + groups[0].apikey + '_' + devices[1].entity_type;
     await mongoose.connection.collection(collectionName).deleteMany({});
     const savedUser = await saveUsers(createUsers(1, 'sensor'));
     const sensorResponse = await supertest(app)
       .post(`/iot/d?i=${devices[1].device_id}&k=${groups[0].apikey}`)
       .set('Authorization', `Bearer ${getToken(savedUser[0])}`)
+      .set('Fiware-Service', tenant)
+      .set('Fiware-ServicePath', '/')
       .type('text')
       .send(sensor.payload);
     expect(sensorResponse.status).toEqual(200);
     const storedValues = await mongoose.connection.collection(collectionName).find({'sensorId': devices[1].device_id}).toArray();
     expect(storedValues).toHaveLength(9);
+    await delay(3000);
+    const entities = await mongoose.connection.useDb('orion-' + tenant).collection('entities').find({}).toArray();
+    expect(entities).toHaveLength(1);
     await mongoose.connection.collection(collectionName).deleteMany({});
 
   });
@@ -67,12 +76,14 @@ describe('POST /api/iot/d', () => {
     process.env.STORAGE_STRATEGY = 'ONE_DOCUMENT_PER_TRANSACTION';
     const sensor = createSensorValues(1)[0];
     const [groups, devices] = await Promise.all([storeGroups(1), storeDevices(3)]);
-    const collectionName = process.env.STH_PREFIX + groups[0].apikey + '_' + devices[1].entity_type;
+    const collectionName = tenant + '_'  + process.env.STH_PREFIX + groups[0].apikey + '_' + devices[1].entity_type;
     await mongoose.connection.collection(collectionName).deleteMany({});
     const savedUser = await saveUsers(createUsers(1, 'sensor'));
     const sensorResponse = await supertest(app)
       .post(`/iot/d?i=${devices[1].device_id}&k=${groups[0].apikey}`)
       .set('Authorization', `Bearer ${getToken(savedUser[0])}`)
+      .set('Fiware-Service', tenant)
+      .set('Fiware-ServicePath', '/')
       .type('text')
       .send(sensor.payload);
     expect(sensorResponse.status).toEqual(200);
@@ -80,8 +91,13 @@ describe('POST /api/iot/d', () => {
     expect(storedValues).toHaveLength(1);
     const storedSample = storedValues[0];
     expect(storedSample.status).toEqual('ok');
+    await delay(3000);
+    const entities = await mongoose.connection.useDb('orion-' + tenant).collection('entities').find({}).toArray();
+    expect(entities).toHaveLength(1);
     await mongoose.connection.collection(collectionName).deleteMany({});
 
   });
+
+  // TODO: Test with attributes that are not configure or of the wrong type
 });
 

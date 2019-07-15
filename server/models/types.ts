@@ -105,5 +105,12 @@ export interface IDeviceDocument extends IDevice, mongoose.Document {
   _id: mongoose.Schema.Types.ObjectId;
 }
 
+export interface ICachedDevice {
+  device_id: string;
+  entity_type: string;
+  entity_name: string;
+  attributes: {};
+}
+
 
 

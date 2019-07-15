@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 dotenv.config({path: '.env.test'});
 import {app} from '../server/app';
-import Cat from '../server/models/cat';
 import User from '../server/models/user';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcryptjs';
@@ -14,7 +13,7 @@ const db = mongoose.connection;
 (<any>mongoose).Promise = global.Promise;
 
 
-const clearDB = () => Promise.all([User.deleteMany({}), Cat.deleteMany({})]);
+const clearDB = () => Promise.all([User.deleteMany({})]);
 
 afterAll(async () => await clearDB());
 

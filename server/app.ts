@@ -1,21 +1,17 @@
-import * as bodyParser from 'body-parser';
+import bodyParser from 'body-parser';
 
 import express from 'express';
 import morgan from 'morgan';
 
-import * as path from 'path';
+import path from 'path';
 
 import setRoutes from './routes';
-// import * as dotenv from 'dotenv';
 
 import {Strategy, ExtractJwt} from 'passport-jwt';
 import * as github from 'passport-github';
 import passport from 'passport';
 
 import User from './models/user';
-import chatRoutes from './chat-routes';
-
-// dotenv.load('.env');
 
 const jwtOpts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer'),
@@ -56,7 +52,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 app.use(morgan('dev'));
 
-const ioServer = chatRoutes(app);
+
 setRoutes(app, passport);
 console.log('Registered Routes');
 app.get('/*', function (req, res) {
@@ -64,4 +60,4 @@ app.get('/*', function (req, res) {
 });
 
 
-export {app, ioServer};
+export {app};

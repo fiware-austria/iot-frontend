@@ -1,6 +1,5 @@
 import * as express from 'express';
 
-import CatCtrl from './controllers/cat';
 import UserCtrl from './controllers/user';
 import SensorValueCtrl from './controllers/sensor-value';
 import {PassportStatic} from 'passport';
@@ -16,7 +15,7 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
 
   const router = express.Router();
 
-  const catCtrl = new CatCtrl();
+
   const userCtrl = new UserCtrl();
   const sensorCtrl = new SensorValueCtrl();
   const deviceCtrl = new DeviceCtrl();
@@ -52,14 +51,6 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
 
   // SensorValues
   router.route('/iot/d').post(sensorCtrl.process);
-
-  // Cats
-  router.route('/cats').get(catCtrl.getAll);
-  router.route('/cats/count').get(jwtAuth, catCtrl.count);
-  router.route('/cat').post(jwtAuth, catCtrl.insert, catCtrl.show);
-  router.route('/cat/:id').get(catCtrl.get, catCtrl.show);
-  router.route('/cat/:id').put(catCtrl.update, catCtrl.show);
-  router.route('/cat/:id').delete(catCtrl.delete);
 
   // Users
   router.route('/login').post(userCtrl.login);

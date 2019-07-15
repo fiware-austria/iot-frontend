@@ -3,9 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config({path: '.env.test'});
 import mongoose from 'mongoose';
 import {app} from '../server/app';
-import Cat from '../server/models/cat';
 import User from '../server/models/user';
-import * as Bluebird from 'bluebird';
 import {IUser} from '../server/models/types';
 import * as jwt from 'jsonwebtoken';
 import {createUsers, saveUsers } from './helpers';
@@ -13,7 +11,7 @@ import {createUsers, saveUsers } from './helpers';
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true } );
 const db = mongoose.connection;
-//(<any>mongoose).Promise = Bluebird;
+
 
 
 const clearDB = () => User.deleteMany({});
