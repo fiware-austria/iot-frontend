@@ -12,6 +12,7 @@ import * as github from 'passport-github';
 import passport from 'passport';
 
 import User from './models/user';
+import {catSystem} from './config';
 
 const jwtOpts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer'),
@@ -54,7 +55,7 @@ app.use(morgan('dev'));
 
 
 setRoutes(app, passport);
-console.log('Registered Routes');
+catSystem.info('Registered Routes');
 app.get('/*', function (req, res) {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });

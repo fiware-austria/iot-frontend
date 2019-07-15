@@ -6,7 +6,7 @@ import Device from '../server/models/device';
 import Group from '../server/models/group';
 
 
-export const range = (size: number): Array<number> =>
+export const range = (size: number): number[] =>
   Array.from(new Array(size + 1).keys()).slice(1);
 
 export const createUsers = (number, prefix = 'user', role = 'user'): Array<IUser> =>

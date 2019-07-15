@@ -12,7 +12,7 @@ import addCustomEqualityTester = jasmine.addCustomEqualityTester;
 
 // TODO refactor to store different tenants in different databases
 
-export default class SensorValueCtrl  {
+export default class SensorValueCtrl {
 
   prefix = process.env.STH_PREFIX;
   orionEnabled = false;
@@ -22,10 +22,11 @@ export default class SensorValueCtrl  {
     Integer: parseInt,
     Date: s => new Date(s),
     String: s => s,
-    Location: s => ({ type: 'Point', coordinates: s.split(',').map(parseFloat).reverse() })
+    Location: s => ({type: 'Point', coordinates: s.split(',').map(parseFloat).reverse()})
   };
 
   orionUpdateInterval = 0;
+  chunkSize = 100;
 
   cache = {};
   orionCache = {};
@@ -52,7 +53,9 @@ export default class SensorValueCtrl  {
     if (this.orionEnabled) {
       catTrans.info('ORION is enabled')
       this.orionUpdateInterval = parseInt(process.env.ORION_UPDATE_INTERVAL, 10) * 1000;
-      catTrans.info(`ORION update interval set to ${this.orionUpdateInterval}ms`)
+      catTrans.info(`ORION update interval set to ${this.orionUpdateInterval}ms`);
+      this.chunkSize = parseInt(process.env.ORION_CHUNKSIZE || '100', 10);
+      catTrans.info(`ORION chunk size set to ${this.chunkSize} entities per request`)
     } else {
       catTrans.warn('ORION is not enabled!')
     }
@@ -72,17 +75,24 @@ export default class SensorValueCtrl  {
       type: device.entity_type,
       id: device.entity_name
     };
-    for (let i = 0; i < parts.length - 1; i += 2) {
-      const name = device.attributes[parts[i]].name;
-      const type = device.attributes[parts[i]].type;
-      const value = this.parsers[type](parts[i + 1]);
-      strategy.addAttribute(name, value);
-      entity[name] = {value: value, type: type};
+    try {
+      for (let i = 0; i < parts.length - 1; i += 2) {
+        const name = device.attributes[parts[i]].name;
+        const type = device.attributes[parts[i]].type;
+        const value = this.parsers[type](parts[i + 1]);
+        strategy.addAttribute(name, value);
+        entity[name] = {value: value, type: type};
+      }
+    } catch (err) {
+      throw new Error('Your sensor is using an attribute that is not configured. Configured attributes are: ' +
+        JSON.stringify(device.attributes))
     }
+
     if (this.orionEnabled) {
       catTrans.debug('Adding entity to orionCache: ' + JSON.stringify(entity));
       this.orionCache[service].entities[entity.type + '___' + entity.id] = entity;
-    };
+    }
+    ;
     return strategy.getDocuments();
   };
 
@@ -119,19 +129,36 @@ export default class SensorValueCtrl  {
     this.orionCache = {};
     for (const [service, entities] of Object.entries(batch)) {
       catTrans.debug('Sending to service: ' + service);
-      const payload = Object.values(entities['entities']);
-      catTrans.debug('Entities: ' + JSON.stringify(payload));
-      superagent.post(process.env.ORION_ENDPOINT + '/v2/op/update')
-        .set('fiware-service', service)
-        .set('fiware-servicepath', entities['servicePath'])
-        .send({actionType: 'append', entities: payload})
-        .then(r => catTrans.info('Successfully transmitted data to ORION'))
-        .catch(err => catTrans.error('Error while transmitting data to ORION', err))
-        .then(this.nextStep)
+      this.sendOrionBatch(service, entities).then(this.nextStep)
+      // TODO: this won't work for multiple tenants!
     }
   };
 
-  process = async (req, res ) => {
+
+  // Split up a list into a list of smaller chunks of a given size
+  toChunks = (size: number, batch: {}[]) => {
+    const result = [];
+    for (let start = 0; start < batch.length; start += size) {
+      result.push(batch.slice(start, start + size));
+    }
+    return result;
+  };
+
+  sendOrionBatch = (service: string, entities) => {
+    const payload = Object.values(entities['entities']);
+
+    catTrans.debug('Entities: ' + JSON.stringify(payload));
+    return this.toChunks(this.chunkSize, payload).reduce((promise, chunk) =>
+      promise.then(() => superagent.post(process.env.ORION_ENDPOINT + '/v2/op/update')
+        .set('fiware-service', service)
+        .set('fiware-servicepath', entities['servicePath'])
+        .send({actionType: 'append', entities: chunk})), Promise.resolve())
+      .then(r => catTrans.info('Successfully transmitted data to ORION'))
+      .catch(err => catTrans.error('Error while transmitting data to ORION', err))
+  }
+
+
+  process = async (req, res) => {
     try {
       const servicePath = req.headers['fiware-servicepath'];
       const service = req.headers['fiware-service'];
@@ -150,6 +177,9 @@ export default class SensorValueCtrl  {
         let device = this.getFromCache(device_id);
         if (!device) {
           const d = await Device.findOne({device_id: device_id});
+          if (d == null) {
+            throw Error(`There is no device configuration for device '${device_id}'`);
+          }
           device = {
             device_id: d.device_id,
             entity_type: d.entity_type,
@@ -178,7 +208,8 @@ export default class SensorValueCtrl  {
         res.send({message: 'OK'});
       }
     } catch (err) {
-      res.status(500).send(err);
+      catTrans.error('Could not process sensor value', err);
+      res.status(500).send({message: (err.message || JSON.stringify(err))});
     }
   }
 }

@@ -6,3 +6,8 @@ The idea is to receive sensor values using ultralight protocol and besides sendi
 directly storing them as time series data in a mongo database.
 
 The project is currently in a very early stage. Documentation will be coming soon.
+
+
+# Developer Documentation
+
+Developer documentation can be found [here](./delelop.md).

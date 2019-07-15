@@ -2,7 +2,8 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 dotenv.config({path: '.env.test'});
 import Group from '../server/models/group';
-import {IGroupDocument} from '../server/models/types';
+import {IDeviceDocument, IGroupDocument} from '../server/models/types';
+import Device from '../server/models/device';
 
 
 mongoose.connect(process.env.MONGODB_URI,  { useNewUrlParser: true } );
@@ -45,5 +46,23 @@ describe('User Schema', () => {
     expect(value.token).toEqual(service.token);
     expect(value.entity_type).toEqual(service.entity_type);
     expect(value.resource).toEqual(service.resource);
+  });
+
+  it('should not be allowed to create groups with identical apiKeys and entity_type', async () => {
+    const service = {
+      'apikey': 'apiperftest',
+      'token': 'token2',
+      'entity_type': 'test_sensor',
+      'resource': '/iot/d'
+    };
+    const value: IGroupDocument = await new Group(service).save();
+    try {
+      const value2: IGroupDocument = await new Group(service).save();
+      fail('It must not be possible to create two devices with the same id!')
+    } catch (e) {
+      if (e.code !== 11000) {
+        fail('This was not a duplicate key error!')
+      }
+    }
   });
 });

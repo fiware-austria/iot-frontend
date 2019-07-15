@@ -9,6 +9,7 @@ const groupSchema = new mongoose.Schema({
 });
 
 groupSchema.index({apikey: 1});
+groupSchema.index({apikey: 1, entity_type: 1}, {unique: true});
 
 const Group = mongoose.model<IGroupDocument>('Group', groupSchema);
 

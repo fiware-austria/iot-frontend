@@ -2,37 +2,43 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   creationTimestamp: 2016-02-18T18:52:05Z
-  name: sensor-config
+  name: iot-frontend-config
 data:
   .env: |
-    MONGODB_URI=mongodb://dbadmin:admin@mongo-shard-router-svc.mongo:27017/developmentdb?authSource=admin
+    MONGODB_URI=mongodb://dbadmin:admin@mongo-shard-router-svc.mongo:27017/iot-frontend?authSource=admin
     STH_PREFIX=sth_
     # Storage Strategy: ONE_DOCUMENT_PER_VALUE / ONE_DOCUMENT_PER_TRANSACTION
     STORAGE_STRATEGY=ONE_DOCUMENT_PER_TRANSACTION
-    SECRET_TOKEN=catswillruletheworld
-    GITHUB_CLIENT_ID=302d190373af9cfdbdfe
-    GITHUB_CLIENT_SECRET=1b5250765bdd8b5ab23dd2d1446e9d727f1d367d
+    ORION_ENDPOINT=http://orion:1026
+    ORION_UPDATE_INTERVAL=30
+    ORION_ENABLED=true
+    ORION_CHUNKSIZE=200
+    # Log levels are: debug, info, warn (default), error
+    LOG_LEVEL=debug
+    SECRET_TOKEN=thisissomedummykey
+    GITHUB_CLIENT_ID=dummy
+    GITHUB_CLIENT_SECRET=dummy
     GITHIB_CALLBACK_URL=http://localhost:4200/api/auth/github/callback
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sensor-server
+  name: iot-frontend
   labels:
-    app: sensor-server
+    app: iot-frontend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: sensor-server
+      run: iot-frontend
   template:
     metadata:
       labels:
-        run: sensor-server
+        run: iot-frontend
     spec:
       containers:
-        - name: sensor-server
+        - name: iot-frontend
           image: fiwareaustria/iot-frontend:latest
           ports:
             - containerPort: 3000
@@ -40,23 +46,23 @@ spec:
             - containerPort: 4200
               name: gui
           volumeMounts:
-            - name: sensor-config
+            - name: iot-frontend-config
               mountPath: /sensors/.env
               subPath: .env
 
       volumes:
-        - name: sensor-config
+        - name: iot-frontend-config
           configMap:
             # Provide the name of the ConfigMap containing the files you want
             # to add to the container
-            name: sensor-config
+            name: iot-frontend-config
 
 
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: sensor-server
+  name: iot-frontend
 spec:
   ports:
     - port: 3000
@@ -68,7 +74,7 @@ spec:
       name: gui
       nodePort: 32112
   selector:
-    run: sensor-server
+    run: iot-frontend
   type: LoadBalancer
 
 

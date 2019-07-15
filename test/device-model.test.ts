@@ -55,4 +55,35 @@ describe('User Schema', () => {
     expect(value.entity_name).toEqual(device.entity_name);
     expect(value.attributes).toHaveLength(2);
   });
+
+  it('should not be allowed to create to sensors with the same id', async () => {
+    const device = {
+      device_id: 'test-sensor1',
+      entity_name : 'TestSensor1',
+      entity_type: 'test_sensor',
+      timezone: 'Europe/Vienna',
+      attributes: [
+        {
+          object_id: 't',
+          name: 'temperature',
+          type: 'Float'
+        },
+        {
+          object_id: 'h',
+          name: 'humidity',
+          type: 'Float'
+        },
+      ]
+    };
+    const value: IDeviceDocument = await new Device(device).save();
+    try {
+      const value2: IDeviceDocument = await new Device(device).save();
+      fail('It must not be possible to create two devices with the same id!')
+    } catch (e) {
+       if (e.code !== 11000) {
+         fail('This was not a duplicate key error!')
+       }
+    }
+
+  });
 });
