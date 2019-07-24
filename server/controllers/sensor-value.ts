@@ -70,7 +70,7 @@ export default class SensorValueCtrl {
     will later be stored to mongo
    */
   parseUltralight = (parts: any, device: ICachedDevice, timestamp: Date, service: string) => {
-    const strategy: StorageStrategy = new this.storageStrategies[process.env.STORAGE_STRATEGY](device, timestamp);
+    const strategy: StorageStrategy = new this.storageStrategies[process.env.STORAGE_STRATEGY]().build(device, timestamp);
     const entity = {
       type: device.entity_type,
       id: device.entity_name

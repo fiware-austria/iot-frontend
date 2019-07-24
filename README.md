@@ -58,6 +58,7 @@ For Example, a message like `t|15|k|abc` will result in the following two docume
 ``` json
 {
     sensorId: 'mySensor42',
+    entity_name: 'LivingRoom42',
     entity_type: 'Room',
     timestamp: <Current Time>,
     valueName: 'temperature',
@@ -65,6 +66,7 @@ For Example, a message like `t|15|k|abc` will result in the following two docume
 }
 {
     sensorId: 'mySensor42',
+    entity_name: 'LivingRoom42',
     entity_type: 'Room',
     timestamp: <Current Time>,
     valueName: 'someText',
@@ -86,6 +88,7 @@ entire Ultralight message:
  ``` json
  {
      sensorId: 'mySensor42',
+     entity_name: 'LivingRoom42',
      entity_type: 'Room',
      timestamp: <Current Time>,
      temperature: 15

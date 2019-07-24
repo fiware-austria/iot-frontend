@@ -10,18 +10,19 @@ const device = {
 
 describe('OneDocumentPerValueStrategy', () => {
     it('should initialize with an empty list', () => {
-      const strategy: StorageStrategy = new OneDocumentPerValueStrategy(device, new Date());
+      const strategy: StorageStrategy = new OneDocumentPerValueStrategy().build(device, new Date());
       expect(strategy.getDocuments()).toHaveLength(0);
     });
 
     it('should create one object per value', () => {
       const now = new Date();
-      const strategy = new OneDocumentPerValueStrategy(device, now);
+      const strategy = new OneDocumentPerValueStrategy().build(device, now);
       strategy.addAttribute('temperature', 23.4);
       strategy.addAttribute('location', {type: 'Point', coordinates: [31.2, 45.3]});
       expect(strategy.getDocuments()).toHaveLength(2);
       expect(strategy.getDocuments()[0]).toEqual({
         sensorId: 'Sensor1',
+        entity_name: 'Room23',
         entity_type: 'Room',
         timestamp: now,
         valueName: 'temperature',
@@ -29,6 +30,7 @@ describe('OneDocumentPerValueStrategy', () => {
       });
       expect(strategy.getDocuments()[1]).toEqual({
         sensorId: 'Sensor1',
+        entity_name: 'Room23',
         entity_type: 'Room',
         timestamp: now,
         valueName: 'location',

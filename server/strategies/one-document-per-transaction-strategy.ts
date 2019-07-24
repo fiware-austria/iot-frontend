@@ -11,11 +11,12 @@ export class OneDocumentPerTransactionStrategy extends StorageStrategy {
 
   documents = {};
 
-  constructor(public device: ICachedDevice, public timestamp: Date) {
-    super();
-    this.documents['sensorId'] = this.device.device_id;
-    this.documents['timestamp'] = this.timestamp;
-    this.documents['entity_type'] = this.device.entity_type;
+  build = (device: ICachedDevice, timestamp: Date) => {
+    this.documents['sensorId'] = device.device_id;
+    this.documents['timestamp'] = timestamp;
+    this.documents['entity_type'] = device.entity_type;
+    this.documents['entity_name'] = device.entity_name;
+    return this;
   }
 
   addAttribute = (name, value) => {

@@ -56,7 +56,7 @@ beforeEach(async () => await clearDB());
 
 afterAll(async () => await clearDB());
 
-const checkEntity = (entity: {}, sample: {}, ignore = ['_id', 'timestamp', 'sensorId', 'entity_type']) => {
+const checkEntity = (entity: {}, sample: {}, ignore = ['_id', 'timestamp', 'sensorId', 'entity_type', 'entity_name']) => {
   console.log('Checking entity: ' + entity['_id'].id);
   Object.entries(sample).forEach(([key, value]) => {
       if (!ignore.includes(key)) {
