@@ -22,6 +22,8 @@ mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true});
 const db = mongoose.connection;
 
 const tenant = 'test_tenant';
+const entity_type = 'test_sensor';
+const sensor_colletion_name = tenant + '_' + process.env.STH_PREFIX + '_' + entity_type;
 
 const randomValue = (min: number, max: number) => Math.round((Math.random() * (max - min) + min) * 100) / 100
 const delay = ms => new Promise(res => setTimeout(res, ms));
@@ -42,7 +44,7 @@ const createSensorValues = (number: number, devices: IDeviceDocument[], apiKey =
 
 
 const clearDB = () => Promise.all([
-  SensorValue.deleteMany({}),
+  db.collection(sensor_colletion_name).deleteMany({}),
   User.deleteMany({}),
   Device.deleteMany({}),
   Group.deleteMany({}),
@@ -86,7 +88,7 @@ describe('POST /api/iot/d', () => {
     process.env.STORAGE_STRATEGY = 'ONE_DOCUMENT_PER_VALUE';
     const [groups, devices] = await Promise.all([storeGroups(1), storeDevices(1)]);
     const samples = createSensorValues(1, devices);
-    const collectionName = tenant + '_' + process.env.STH_PREFIX + groups[0].apikey + '_' + devices[0].entity_type;
+    const collectionName = tenant + '_' + process.env.STH_PREFIX  + '_' + devices[0].entity_type;
     await mongoose.connection.collection(collectionName).deleteMany({});
     const savedUser = await saveUsers(createUsers(1, 'sensor'));
     const sensorResponse = await supertest(app)
@@ -113,7 +115,7 @@ describe('POST /api/iot/d', () => {
     process.env.STORAGE_STRATEGY = 'ONE_DOCUMENT_PER_TRANSACTION';
     const [groups, devices] = await Promise.all([storeGroups(1), storeDevices(1)]);
     const samples = createSensorValues(1, devices);
-    const collectionName = tenant + '_' + process.env.STH_PREFIX + groups[0].apikey + '_' + devices[0].entity_type;
+    const collectionName = tenant + '_' + process.env.STH_PREFIX + '_' + devices[0].entity_type;
     await mongoose.connection.collection(collectionName).deleteMany({});
     const savedUser = await saveUsers(createUsers(1, 'sensor'));
     const sensorResponse = await supertest(app)
@@ -140,7 +142,7 @@ describe('POST /api/iot/d', () => {
     process.env.STORAGE_STRATEGY = 'ONE_DOCUMENT_PER_TRANSACTION';
     const [groups, devices] = await Promise.all([storeGroups(1), storeDevices(1)]);
     const samples = createSensorValues(1, devices);
-    const collectionName = tenant + '_' + process.env.STH_PREFIX + groups[0].apikey + '_' + devices[0].entity_type;
+    const collectionName = tenant + '_' + process.env.STH_PREFIX + '_' + devices[0].entity_type;
     await mongoose.connection.collection(collectionName).deleteMany({});
     const savedUser = await saveUsers(createUsers(1, 'sensor'));
     const sensorResponse = await supertest(app)
@@ -159,7 +161,7 @@ describe('POST /api/iot/d', () => {
     process.env.STORAGE_STRATEGY = 'ONE_DOCUMENT_PER_TRANSACTION';
     const [groups, devices] = await Promise.all([storeGroups(1), storeDevices(1)]);
     const samples = createSensorValues(1, devices);
-    const collectionName = tenant + '_' + process.env.STH_PREFIX + groups[0].apikey + '_' + devices[0].entity_type;
+    const collectionName = tenant + '_' + process.env.STH_PREFIX + '_' + devices[0].entity_type;
     await mongoose.connection.collection(collectionName).deleteMany({});
     const savedUser = await saveUsers(createUsers(1, 'sensor'));
     const sensorResponse = await supertest(app)
@@ -183,7 +185,7 @@ describe('POST /api/iot/d', () => {
     const numberOfSamples = 3;
     const [groups, devices] = await Promise.all([storeGroups(1), storeDevices(numberOfDevices)]);
     const samples = createSensorValues(numberOfSamples, devices);
-    const collectionName = tenant + '_' + process.env.STH_PREFIX + groups[0].apikey + '_' + devices[0].entity_type;
+    const collectionName = tenant + '_' + process.env.STH_PREFIX + '_' + devices[0].entity_type;
     await mongoose.connection.collection(collectionName).deleteMany({});
     const savedUser = await saveUsers(createUsers(1, 'sensor'));
     const sensorResponses = await transmitSamples(samples);
