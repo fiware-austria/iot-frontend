@@ -203,7 +203,7 @@ export default class SensorValueCtrl {
               break;
           }
         }
-        const result = await mongoose.connection.collection(service + '_' + this.prefix + '_' + device.entity_type).insertMany(values);
+        const result = await mongoose.connection.collection(this.prefix + '_' + service + '_' + device.entity_type).insertMany(values);
         res.send({message: 'OK'});
       }
     } catch (err) {
