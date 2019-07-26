@@ -1,0 +1,17 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: iot-frontend
+spec:
+  ports:
+    - port: 3000
+      targetPort: 3000
+      name: api
+      nodePort: 32111
+    - port: 4200
+      targetPort: 4200
+      name: gui
+      nodePort: 32112
+  selector:
+    run: iot-frontend
+  type: LoadBalancer
