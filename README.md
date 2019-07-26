@@ -171,6 +171,7 @@ into a value of the corresponding JavaScript type:
 * Float
 * String
 * Date
+
 * Location (expects a comma separated pair of float values (e.g. "43.223,56.443") that will
 be translated into a GeoJSON `Point` type) 
 

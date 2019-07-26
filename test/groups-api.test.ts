@@ -4,7 +4,7 @@ dotenv.config({path: '.env.test'});
 import mongoose from 'mongoose';
 import {app} from '../server/app';
 import User from '../server/models/user';
-import {createUsers, range, saveUsers, getToken, createGroups} from './helpers';
+import {createUsers, range, saveUsers, getToken, createGroups, storeGroups} from './helpers';
 import Group from '../server/models/group';
 
 
@@ -21,29 +21,9 @@ beforeEach(async () => await clearDB());
 
 afterAll(async () => await clearDB());
 
-/*
-describe('GET /cats', () => {
-  it('should load an emtpy list of cats', async () => {
-    const response = await supertest(app).get('/cats');
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual([]);
-  });
-  it('should return cats if they are in the database', async () => {
-    const tom = new Cat({name: 'Tom', weight: 4});
-    const savedCat = await tom.save();
-    const response = await supertest(app).get('/cats');
-    expect(response.status).toBe(200);
-    expect(response.body.length).toBe(1)
-    expect(response.body[0].name).toEqual(savedCat.name);
-    expect(response.body[0]._id.toString()).toBe(savedCat._id.toString());
-    expect(response.body[0].weight).toEqual(savedCat.weight);
-  });
-});
-
- */
 
 describe('POST /iot/services', () => {
-  it('should create new Devices', async () => {
+  it('should create new Device', async () => {
     // console.log(`Using token: ${userJWT}`);
     const savedUser = await saveUsers(createUsers(1, 'iot-user'));
     const createServiceResponse = await supertest(app)
@@ -53,6 +33,28 @@ describe('POST /iot/services', () => {
     expect(createServiceResponse.status).toBe(200);
     const services = await Group.find({});
     expect(services).toHaveLength(3);
+  });
+  it('should list all Devices', async () => {
+    // console.log(`Using token: ${userJWT}`);
+    const savedUser = await saveUsers(createUsers(1, 'iot-user'));
+    const storedGroups = storeGroups(10);
+    const listGroupsResponse = await supertest(app)
+      .get('/iot/services')
+      .set('Authorization', `Bearer ${getToken(savedUser[0])}`)
+      .send();
+    expect(listGroupsResponse.status).toBe(200);
+    expect(listGroupsResponse.body).toHaveLength(10);
+  });
+  it('should list one Device', async () => {
+    // console.log(`Using token: ${userJWT}`);
+    const savedUser = await saveUsers(createUsers(1, 'iot-user'));
+    const storedGroups = await storeGroups(10);
+    const listGroupsResponse = await supertest(app)
+      .get('/iot/services/apiperftest_3')
+      .set('Authorization', `Bearer ${getToken(savedUser[0])}`)
+      .send();
+    expect(listGroupsResponse.status).toBe(200);
+    expect(listGroupsResponse.body.apikey).toEqual('apiperftest_3');
   });
 });
 

@@ -30,6 +30,7 @@ passport.use(new Strategy(jwtOpts, (jwtPayload, done) => {
 }));
 
 // Register GitHub Strategy
+/*
 passport.use(new github.Strategy({
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
@@ -41,6 +42,8 @@ passport.use(new github.Strategy({
     User.findOrCreate(profile).then(user => done(null, user)).catch(done)
   )
 );
+*/
+
 
 app.set('port', (process.env.PORT || 3000));
 

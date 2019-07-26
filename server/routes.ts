@@ -43,12 +43,15 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
 
   // Devices
   router.route('/iot/devices').post(deviceCtrl.insertBatch);
-  router.route('/iot/devices').get(deviceCtrl.get);
+  router.route('/iot/devices').get(deviceCtrl.getList);
+  router.route('/iot/devices/:deviceId').get(deviceCtrl.show);
+  router.param('deviceId', deviceCtrl.load);
 
   // Groups
   router.route('/iot/services').post(groupCtrl.insertBatch);
-  router.route('/iot/services').get(groupCtrl.getAll);
-
+  router.route('/iot/services').get(groupCtrl.getList);
+  router.route('/iot/services/:serviceId').get(groupCtrl.show);
+  router.param('serviceId', groupCtrl.load);
   // SensorValues
   router.route('/iot/d').post(sensorCtrl.process);
 
