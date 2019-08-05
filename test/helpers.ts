@@ -47,12 +47,12 @@ export const createDevices = (number) =>
       {
         'object_id': 'pm25',
         'name': 'pm25',
-        'type': 'Int'
+        'type': 'Float'
       },
       {
         'object_id': 'pm10',
         'name': 'pm10',
-        'type': 'Int'
+        'type': 'Float'
       },
       {
         'object_id': 'ap',
@@ -72,7 +72,7 @@ export const createDevices = (number) =>
       {
         'object_id': 'l',
         'name': 'location',
-        'type': 'Location'
+        'type': 'geo:point'
       },
       {
         'object_id': 'ap2',

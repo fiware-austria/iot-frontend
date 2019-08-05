@@ -60,8 +60,13 @@ const checkEntity = (entity: {}, sample: {}, ignore = ['_id', 'timestamp', 'sens
   console.log('Checking entity: ' + entity['_id'].id);
   Object.entries(sample).forEach(([key, value]) => {
       if (!ignore.includes(key)) {
-        console.log('Testing property: ' + key);
-        expect(entity['attrs'][key].value).toEqual(value)
+        if (entity['attrs'][key].type === 'geo:point') {
+          console.log('Ignoring location property: ' + key);
+        } else {
+          console.log('Testing property: ' + key);
+          expect(entity['attrs'][key].value).toEqual(value);
+        }
+
       }
     }
   );

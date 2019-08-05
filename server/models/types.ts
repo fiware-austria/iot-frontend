@@ -112,5 +112,35 @@ export interface ICachedDevice {
   attributes: {};
 }
 
+// Cygnus message types
 
+export interface Attribute {
+  name: string,
+  type: string,
+  value: string,
+  metadata?: [{
+    name: string,
+    type: string,
+    value: any
+  }]
+}
+
+interface ContextResponse {
+  contextElement: {
+    type: string,
+    isPattern: boolean,
+    id: string,
+    attributes: Attribute[]
+  },
+  statusCode: {
+    code: number,
+    reasonPhrase: string
+  }
+}
+
+export interface CygnusNotifyRequest {
+  subscriptionId: string,
+  originator: string,
+  contextResponses: ContextResponse[],
+}
 

@@ -7,6 +7,7 @@ import {Application} from 'express';
 import * as jwt from 'jsonwebtoken';
 import DeviceCtrl from './controllers/device';
 import GroupCtrl from './controllers/group';
+import CygnusCtrl from './controllers/cygnus';
 
 
 
@@ -20,6 +21,7 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
   const sensorCtrl = new SensorValueCtrl();
   const deviceCtrl = new DeviceCtrl();
   const groupCtrl = new GroupCtrl();
+  const cygnusCtrl = new CygnusCtrl();
 
 
   const jwtAuth = passport.authenticate('jwt', { session: false});
@@ -54,6 +56,8 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
   router.param('serviceId', groupCtrl.load);
   // SensorValues
   router.route('/iot/d').post(sensorCtrl.process);
+  // Cygnus
+  router.route('/notify').post(cygnusCtrl.process);
 
   // Users
   router.route('/login').post(userCtrl.login);

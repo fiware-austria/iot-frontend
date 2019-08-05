@@ -172,8 +172,79 @@ into a value of the corresponding JavaScript type:
 * String
 * Date
 
-* Location (expects a comma separated pair of float values (e.g. "43.223,56.443") that will
+* Location or geo:point (expects a comma separated pair of float values (e.g. "43.223,56.443") that will
 be translated into a GeoJSON `Point` type) 
+
+# Transmitting Sensor Data
+
+For transmitting sensor data, iot-frontend offers two interfaces
+
+## Ultralight
+
+This interface expects Ultralight text messages via POST request to be send to endpoint URI `/iot/d`.
+
+Example:
+
+`POST https://my-iot-server:my-iot-port/iot/d?k=my_api_key&i=my_device_id`
+
+Where `my_api_key` corresponds to the `apikey` of a service definition and `my_device_id` corresponds to the
+`device_id` of a registered device. There's an optional query-parameter called `t`, that can be used to 
+pass timestamps, which are otherwise created using the current system-time when writing entries to Mongo DB.
+The request also has to include the header fields `Fiware-Service` and `Fiware-ServicePath`.
+
+The payload is a simple text message like:
+
+`t|25.6|ap|1098`
+
+Each key (`t`,`ap`) in this message needs to refer to an `attribute`'s `object_id` in the corresponding device definition.
+The value for each key is parsed from string into the defined data type.
+
+## Cygnus-like Interface
+
+Since this component is designed to be an alternative to FIWARE IDAS and Cygnus, it also provides a Cygnus like interface.
+This allow the iot-frontend to be registered as an event-listener with Orion.
+Requests have to be sent via POST to the URI `/notify`. A typical request looks like this:
+
+```
+{
+  subscriptionId: '1234',
+  originator: 'localhost',
+  contextResponses: [
+    {
+      contextElement: {
+        type: 'Room',
+        isPattern: false,
+        id: 'Room42,
+        attributes: [
+            {
+              name: 'temperature',
+              type: 'Float',
+              value: '24.73',
+              metadata: [{
+                name: 'TimeInstant',
+                type: 'ISO8601',
+                value: '2019-08-05T08:46:03.215Z'
+              }]
+            },
+            {
+              name: 'humidity',
+              type: 'Float',
+              value: '64.5',
+              metadata: [{
+                name: 'TimeInstant',
+                type: 'ISO8601',
+                value: '2019-08-05T08:46:03.215Z'
+              }]
+            }
+        ]
+      },
+      statusCode: {
+        code: 200,
+        reasonPhrase: 'OK'
+      }
+  ],
+}
+```
 
 
 # Developer Documentation

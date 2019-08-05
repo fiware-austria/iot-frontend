@@ -22,7 +22,8 @@ export default class SensorValueCtrl {
     Integer: parseInt,
     Date: s => new Date(s),
     String: s => s,
-    Location: s => ({type: 'Point', coordinates: s.split(',').map(parseFloat).reverse()})
+    Location: s => ({type: 'Point', coordinates: s.split(',').map(parseFloat).reverse()}),
+    'geo:point': s => ({type: 'Point', coordinates: s.split(',').map(parseFloat).reverse()})
   };
 
   orionUpdateInterval = 0;
@@ -71,12 +72,16 @@ export default class SensorValueCtrl {
    */
   parseUltralight = (parts: any, device: ICachedDevice, timestamp: Date, service: string) => {
     const strategy: StorageStrategy = new this.storageStrategies[process.env.STORAGE_STRATEGY]().build(device, timestamp);
+    let hasLocation = false;
     const entity = {
       type: device.entity_type,
       id: device.entity_name
     };
     try {
       for (let i = 0; i < parts.length - 1; i += 2) {
+        if (device.attributes[parts[i]].type === 'geo:point') {
+          hasLocation = true;
+        }
         const name = device.attributes[parts[i]].name;
         const type = device.attributes[parts[i]].type;
         const value = this.parsers[type](parts[i + 1]);
@@ -89,10 +94,15 @@ export default class SensorValueCtrl {
     }
 
     if (this.orionEnabled) {
-      catTrans.debug('Adding entity to orionCache: ' + JSON.stringify(entity));
-      this.orionCache[service].entities[entity.type + '___' + entity.id] = entity;
+      const orionEntity = hasLocation ? Object.assign({}, entity) : entity;
+      if (hasLocation) {
+        // Orion requires an array of [lat,alt] for type geo:point, whereas Mongo needs geo:json
+        Object.entries(orionEntity).filter(([k, v]) => v['type'] === 'geo:point')
+          .forEach(([k, v ]) => orionEntity[k] = { value: `${v['value'].coordinates[1]},${v['value'].coordinates[0]}`, type: 'geo:point'});
+      }
+      catTrans.debug('Adding entity to orionCache: ' + JSON.stringify(orionEntity));
+      this.orionCache[service].entities[entity.type + '___' + entity.id] = orionEntity;
     }
-    ;
     return strategy.getDocuments();
   };
 
