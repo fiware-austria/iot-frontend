@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import {Request} from 'express';
 
 abstract class BaseCtrl<T extends mongoose.Document> {
 
@@ -11,7 +12,7 @@ abstract class BaseCtrl<T extends mongoose.Document> {
 
 
   // Get all enities of type model
-  getAll = (req, res) => {
+  getAll = (req: Request, res) => {
     this.model.find({}, (err, docs) => {
       if (err) { return console.error(err); }
       res.json(docs);

@@ -88,7 +88,7 @@ export const createGroups = (number) =>
   range(number).map(nr => ({
     'apikey': `apiperftest_${nr}`,
     'token': 'token2',
-    'entity_type': 'test_sensor_${nr}',
+    'entity_type': `test_sensor_${nr}`,
     'resource': '/iot/d'
   }));
 

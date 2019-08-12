@@ -5,7 +5,7 @@ metadata:
   labels:
     app: iot-frontend
 spec:
-  replicas: 1
+  replicas: {{ .Values.frontend.replicas | default 1}}
   selector:
     matchLabels:
       run: iot-frontend
@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: iot-frontend
-          image: fiwareaustria/iot-frontend:latest
+          image: {{ .Values.frontend.image }}
           ports:
             - containerPort: 3000
               name: api

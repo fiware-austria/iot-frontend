@@ -26,13 +26,19 @@ describe('POST /iot/services', () => {
   it('should create new Device', async () => {
     // console.log(`Using token: ${userJWT}`);
     const savedUser = await saveUsers(createUsers(1, 'iot-user'));
+    const groups = createGroups(3);
     const createServiceResponse = await supertest(app)
       .post('/iot/services')
       .set('Authorization', `Bearer ${getToken(savedUser[0])}`)
-      .send({services: createGroups(3)});
+      .set('fiware-service', 'test_tenant')
+      .send({services: groups});
     expect(createServiceResponse.status).toBe(200);
     const services = await Group.find({});
     expect(services).toHaveLength(3);
+    const collectionName = (type) => process.env.STH_PREFIX + '_test_tenant_' + type;
+    const data_collection1_indexes = await db.collection(collectionName(groups[0].entity_type)).getIndexes();
+    expect(data_collection1_indexes._entity_name).toBeDefined();
+    expect(data_collection1_indexes._entity_name_timestamp).toBeDefined();
   });
   it('should list all Devices', async () => {
     // console.log(`Using token: ${userJWT}`);

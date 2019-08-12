@@ -50,7 +50,7 @@ export default function setRoutes(app: Application, passport: PassportStatic) {
   router.param('deviceId', deviceCtrl.load);
 
   // Groups
-  router.route('/iot/services').post(groupCtrl.insertBatch);
+  router.route('/iot/services').post(groupCtrl.createIndex, groupCtrl.insertBatch);
   router.route('/iot/services').get(groupCtrl.getList);
   router.route('/iot/services/:serviceId').get(groupCtrl.show);
   router.param('serviceId', groupCtrl.load);

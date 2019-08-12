@@ -7,11 +7,11 @@ spec:
     - port: 3000
       targetPort: 3000
       name: api
-      nodePort: 32111
+      nodePort: {{ .Values.frontend.api.nodePort | default 32111}}
     - port: 4200
       targetPort: 4200
       name: gui
-      nodePort: 32112
+      nodePort: {{ .Values.frontend.gui.nodePort | default 32112 }}
   selector:
     run: iot-frontend
   type: LoadBalancer
