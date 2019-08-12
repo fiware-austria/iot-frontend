@@ -84,13 +84,14 @@ export const createDevices = (number) =>
 
 export const storeDevices = (nr) => Device.insertMany(createDevices(nr));
 
-export const createGroups = (number) =>
+export const createGroups = (number, service = 'test_tenant') =>
   range(number).map(nr => ({
     'apikey': `apiperftest_${nr}`,
     'token': 'token2',
+    'service': service,
     'entity_type': `test_sensor_${nr}`,
     'resource': '/iot/d'
   }));
 
 
-export const storeGroups = (nr) => Group.insertMany(createGroups(nr));
+export const storeGroups = (nr, service = 'test_tenant') => Group.insertMany(createGroups(nr, service));

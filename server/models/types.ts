@@ -77,6 +77,7 @@ export interface ISensorValueDocument extends ISensorValue, mongoose.Document {
 // IDAS group/service
 export interface IGroup {
   apikey: string,
+  service: string,
   token: string,
   entity_type: string,
   resource: string,

@@ -35,6 +35,7 @@ describe('POST /iot/services', () => {
     expect(createServiceResponse.status).toBe(200);
     const services = await Group.find({});
     expect(services).toHaveLength(3);
+    services.forEach(svc => expect(svc.service).toEqual('test_tenant'));
     const collectionName = (type) => process.env.STH_PREFIX + '_test_tenant_' + type;
     const data_collection1_indexes = await db.collection(collectionName(groups[0].entity_type)).getIndexes();
     expect(data_collection1_indexes._entity_name).toBeDefined();
@@ -44,9 +45,11 @@ describe('POST /iot/services', () => {
     // console.log(`Using token: ${userJWT}`);
     const savedUser = await saveUsers(createUsers(1, 'iot-user'));
     const storedGroups = storeGroups(10);
+    await storeGroups(5, 'another_tenant');
     const listGroupsResponse = await supertest(app)
       .get('/iot/services')
       .set('Authorization', `Bearer ${getToken(savedUser[0])}`)
+      .set('fiware-service', 'test_tenant')
       .send();
     expect(listGroupsResponse.status).toBe(200);
     expect(listGroupsResponse.body).toHaveLength(10);
@@ -55,8 +58,10 @@ describe('POST /iot/services', () => {
     // console.log(`Using token: ${userJWT}`);
     const savedUser = await saveUsers(createUsers(1, 'iot-user'));
     const storedGroups = await storeGroups(10);
+    await storeGroups(5, 'another_tenant');
     const listGroupsResponse = await supertest(app)
       .get('/iot/services/apiperftest_3')
+      .set('fiware-service', 'test_tenant')
       .set('Authorization', `Bearer ${getToken(savedUser[0])}`)
       .send();
     expect(listGroupsResponse.status).toBe(200);

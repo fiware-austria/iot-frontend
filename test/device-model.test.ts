@@ -34,6 +34,7 @@ describe('User Schema', () => {
     const device = {
       device_id: 'test-sensor1',
       entity_name : 'TestSensor1',
+      service: 'test_tenant',
       entity_type: 'test_sensor',
       timezone: 'Europe/Vienna',
       attributes: [
@@ -59,6 +60,7 @@ describe('User Schema', () => {
   it('should not be allowed to create to sensors with the same id', async () => {
     const device = {
       device_id: 'test-sensor1',
+      service: 'test_tenant',
       entity_name : 'TestSensor1',
       entity_type: 'test_sensor',
       timezone: 'Europe/Vienna',

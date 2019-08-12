@@ -36,6 +36,7 @@ describe('User Schema', () => {
   it('should allow groups to be created', async () => {
     const service = {
       'apikey': 'apiperftest',
+      'service': 'test_tenant',
       'token': 'token2',
       'entity_type': 'test_sensor',
       'resource': '/iot/d'
@@ -52,6 +53,7 @@ describe('User Schema', () => {
     const service = {
       'apikey': 'apiperftest',
       'token': 'token2',
+      'service': 'test_tenant',
       'entity_type': 'test_sensor',
       'resource': '/iot/d'
     };

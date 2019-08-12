@@ -6,10 +6,11 @@ const groupSchema = new mongoose.Schema({
   token: { type: mongoose.Schema.Types.String, required: false },
   entity_type: { type: mongoose.Schema.Types.String, required: true },
   resource: { type: mongoose.Schema.Types.String, required: true },
+  service: { type: mongoose.Schema.Types.String, required: true }
 });
 
 groupSchema.index({apikey: 1});
-groupSchema.index({apikey: 1, entity_type: 1}, {unique: true});
+groupSchema.index({apikey: 1, entity_type: 1, service: 1}, {unique: true});
 
 const Group = mongoose.model<IGroupDocument>('Group', groupSchema);
 

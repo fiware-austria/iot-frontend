@@ -10,7 +10,7 @@ export default class GroupCtrl extends BaseCtrl<IGroupDocument> {
   listName = 'services';
 
   load = (req, res, next, id) =>
-    this.model.findOne({apikey: id})
+    this.model.findOne({apikey: id, service: req.headers['fiware-service']})
       .then(m => (this.model.hasOwnProperty('load')) ? this.model['load'](m._id) : m)
       .then(m => {
         if (m == null) {
@@ -22,14 +22,27 @@ export default class GroupCtrl extends BaseCtrl<IGroupDocument> {
       .then(() => next())
       .catch(err => res.status(500).json({message: `Could not load this element (${err})`}));
 
+  extractService = (req, res, next) => {
+    if (!('fiware-service' in req.headers)) {
+      res.status(400).send({message: 'Header field \'fiware-service\' is required in request'})
+    }
+    const service = req.headers['fiware-service'];
+    req.body.service = service;
+    if ('services' in req.body) {
+      req.body.services.forEach(svc => svc.service = service);
+    }
+    next();
+  }
+
+  getList = (req, res) =>
+    this.model.find({service: req.body.service}, this.projection)
+      .then(l => res.json(l))
+      .catch(err => res.status(500).json({message: err}));
+
   createIndex = (req, res, next) => {
     try {
       const prefix = process.env.STH_PREFIX;
-      if (!('fiware-service' in req.headers)) {
-        res.status(400).send({message: 'Header field \'fiware-service\' is required in request'})
-      }
-      const service = req.headers['fiware-service'];
-      const collectionName = (type: string) => prefix + '_' + service + '_' + type;
+      const collectionName = (type: string) => prefix + '_' + req.body.service + '_' + type;
       const db = mongoose.connection;
       Promise.all(req.body.services.map(svc => {
         const colName = collectionName(svc.entity_type);

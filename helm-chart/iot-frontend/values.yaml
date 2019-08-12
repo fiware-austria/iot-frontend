@@ -5,4 +5,5 @@ frontend:
     nodePort: 32111
   gui:
     nodePort: 32112
-  mongo: mongodb://dbadmin:admin@mongo-shard-router-svc.mongo:27017/iot-frontend?authSource=admin
+  # mongo: mongodb://dbadmin:admin@mongo-shard-router-svc.mongo:27017/iot-frontend?authSource=admin
+  mongo: mongodb://dbadmin:admin@mongo-router-svc.mongo:27017/iot-frontend?authSource=admin
