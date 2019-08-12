@@ -29,6 +29,7 @@ describe('POST /iot/devices', () => {
     const savedUser = await saveUsers(createUsers(1, 'iot-user'));
     const createDevicesResponse = await supertest(app)
       .post('/iot/devices')
+      .set('fiware-service', 'test_tenant')
       .set('Authorization', `Bearer ${getToken(savedUser[0])}`)
       .send({devices: createDevices(5)});
     expect(createDevicesResponse.status).toBe(200);
@@ -39,8 +40,10 @@ describe('POST /iot/devices', () => {
     // console.log(`Using token: ${userJWT}`);
     const savedUser = await saveUsers(createUsers(1, 'iot-user'));
     const storedDevices = await storeDevices(10)
+    await storeDevices(5, 'another_tenant');
     const listDevicesResponse = await supertest(app)
       .get('/iot/devices')
+      .set('fiware-service', 'test_tenant')
       .set('Authorization', `Bearer ${getToken(savedUser[0])}`)
       .send();
     expect(listDevicesResponse.status).toBe(200);
@@ -53,6 +56,7 @@ describe('POST /iot/devices', () => {
     const storedDevices = await storeDevices(10)
     const listDevicesResponse = await supertest(app)
       .get('/iot/devices/test_device_5')
+      .set('fiware-service', 'test_tenant')
       .set('Authorization', `Bearer ${getToken(savedUser[0])}`)
       .send();
     expect(listDevicesResponse.status).toBe(200);

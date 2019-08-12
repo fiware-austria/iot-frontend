@@ -169,10 +169,10 @@ into a value of the corresponding JavaScript type:
 
 * Int/Integer
 * Float
-* String
+* String/Text
 * Date
 
-* Location or geo:point (expects a comma separated pair of float values (e.g. "43.223,56.443") that will
+* Location/geo:point (expects a comma separated pair of float values (e.g. "43.223,56.443") that will
 be translated into a GeoJSON `Point` type) 
 
 # Transmitting Sensor Data

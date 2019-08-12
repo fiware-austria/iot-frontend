@@ -5,20 +5,13 @@ import {catSystem, catTrans} from '../config';
 import superagent from 'superagent';
 import {Request, Response} from 'express';
 import {Attribute, CygnusNotifyRequest, ICachedDevice} from '../models/types';
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+import {parsers} from './parsers';
 
 export default class CygnusCtrl {
 
   prefix = process.env.STH_PREFIX;
-  parsers = {
-    Float: parseFloat,
-    Int: parseInt,
-    Integer: parseInt,
-    Date: s => new Date(s),
-    String: s => s,
-    Location: s => ({type: 'Point', coordinates: s.split(',').map(parseFloat).reverse()}),
-    'geo:point': s => ({type: 'Point', coordinates: s.split(',').map(parseFloat).reverse()})
-  };
+
   storageStrategies = {
     ONE_DOCUMENT_PER_VALUE: OneDocumentPerValueStrategy,
     ONE_DOCUMENT_PER_TRANSACTION: OneDocumentPerTransactionStrategy
@@ -50,12 +43,12 @@ export default class CygnusCtrl {
         const timestamp = this.getTimeStamp(ctxResp.contextElement.attributes[0])
         const strategy: StorageStrategy = new this.storageStrategies[process.env.STORAGE_STRATEGY]().build(virtualDevice,
           timestamp);
-        ctxResp.contextElement.attributes.forEach(att => strategy.addAttribute(att.name, this.parsers[att.type](att.value)))
+        ctxResp.contextElement.attributes.forEach(att => strategy.addAttribute(att.name, parsers[att.type](att.value)))
         return mongoose.connection.collection(this.prefix + '_' + tenant + '_' + virtualDevice.entity_type)
           .insertMany(strategy.getDocuments());
       } catch (err) {
           const msg = 'Parsing your request failed. Make sure that all attributes have a valid type! \n' +
-            `Supported types are: ${Object.keys(this.parsers)}`
+            `Supported types are: ${Object.keys(parsers)}`
           catSystem.error(msg, err)
           return  Promise.reject(new Error(msg));
       }

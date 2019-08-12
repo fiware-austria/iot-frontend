@@ -8,7 +8,7 @@ import {OneDocumentPerTransactionStrategy} from '../strategies/one-document-per-
 import {StorageStrategy} from '../strategies/storageStrategy';
 import {catTrans} from '../config';
 import superagent from 'superagent';
-import addCustomEqualityTester = jasmine.addCustomEqualityTester;
+import {parsers} from './parsers';
 
 // TODO refactor to store different tenants in different databases
 
@@ -16,16 +16,6 @@ export default class SensorValueCtrl {
 
   prefix = process.env.STH_PREFIX;
   orionEnabled = false;
-  parsers = {
-    Float: parseFloat,
-    Int: parseInt,
-    Integer: parseInt,
-    Date: s => new Date(s),
-    String: s => s,
-    Location: s => ({type: 'Point', coordinates: s.split(',').map(parseFloat).reverse()}),
-    'geo:point': s => ({type: 'Point', coordinates: s.split(',').map(parseFloat).reverse()})
-  };
-
   orionUpdateInterval = 0;
   chunkSize = 100;
 
@@ -84,7 +74,7 @@ export default class SensorValueCtrl {
         }
         const name = device.attributes[parts[i]].name;
         const type = device.attributes[parts[i]].type;
-        const value = this.parsers[type](parts[i + 1]);
+        const value = parsers[type](parts[i + 1]);
         strategy.addAttribute(name, value);
         entity[name] = {value: value, type: type};
       }
