@@ -52,9 +52,9 @@ export default class SensorValueCtrl {
     }
   }
 
-  insertCache = (key: string, value: any) => this.cache[key] = value;
+  insertCache = (key: string, service: string, value: any) => this.cache[`${key}_${service}`] = value;
 
-  getFromCache = (key: string) => this.cache[key];
+  getFromCache = (key: string, service: string) => this.cache[`${key}_${service}`];
 
   /*
     Parses the incoming ultralight message and converts it into documents that
@@ -146,7 +146,6 @@ export default class SensorValueCtrl {
 
   sendOrionBatch = (service: string, entities) => {
     const payload = Object.values(entities['entities']);
-
     catTrans.debug('Entities: ' + JSON.stringify(payload));
     return this.toChunks(this.chunkSize, payload).reduce((promise, chunk) =>
       promise.then(() => superagent.post(process.env.ORION_ENDPOINT + '/v2/op/update')
@@ -174,14 +173,15 @@ export default class SensorValueCtrl {
       if (parts.length === 0 || parts.length % 2 !== 0) {
         res.status(400).send({message: 'malformed payload'})
       } else {
-        let device = this.getFromCache(device_id);
+        let device = this.getFromCache(device_id, service);
         if (!device) {
-          const d = await Device.findOne({device_id: device_id});
+          const d = await Device.findOne({device_id: device_id, service: service});
           if (d == null) {
             throw Error(`There is no device configuration for device '${device_id}'`);
           }
           device = {
             device_id: d.device_id,
+            service: service,
             entity_type: d.entity_type,
             entity_name: d.entity_name,
             attributes: d.attributes.reduce((acc, a) => {
@@ -189,7 +189,7 @@ export default class SensorValueCtrl {
               return acc;
             }, {})
           };
-          this.insertCache(device_id, device);
+          this.insertCache(device_id, service, device);
         }
         this.prepareOrionCache(service, servicePath);
         const values = this.parseUltralight(parts, device, timestamp, service);
