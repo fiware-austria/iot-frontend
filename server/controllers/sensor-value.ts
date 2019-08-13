@@ -74,7 +74,7 @@ export default class SensorValueCtrl {
         }
         const name = device.attributes[parts[i]].name;
         const type = device.attributes[parts[i]].type;
-        const value = parsers[type](parts[i + 1]);
+        const value = parsers[type.toLowerCase()](parts[i + 1]);
         strategy.addAttribute(name, value);
         entity[name] = {value: value, type: type};
       }

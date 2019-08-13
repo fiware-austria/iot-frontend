@@ -20,6 +20,7 @@ export default class DeviceCtrl extends BaseCtrl<IDeviceDocument> {
     next();
   }
 
+
   getList = (req, res) =>
     this.model.find({service: req.body.service}, this.projection)
       .then(l => res.json(l))

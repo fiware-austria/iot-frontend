@@ -3,6 +3,7 @@ import {IGroupDocument} from '../models/types';
 import Group from '../models/group';
 import mongoose from 'mongoose';
 import {catTrans} from '../config';
+import {Request} from 'express';
 
 export default class GroupCtrl extends BaseCtrl<IGroupDocument> {
   model = Group;
@@ -33,6 +34,13 @@ export default class GroupCtrl extends BaseCtrl<IGroupDocument> {
     }
     next();
   }
+
+  getAll = (req: Request, res) => {
+    this.model.find({service: req.headers['fiware-service']}, (err, docs) => {
+      if (err) { return console.error(err); }
+      res.json(docs);
+    });
+  };
 
   getList = (req, res) =>
     this.model.find({service: req.body.service}, this.projection)

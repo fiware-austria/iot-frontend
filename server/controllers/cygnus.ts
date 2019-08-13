@@ -43,7 +43,7 @@ export default class CygnusCtrl {
         const timestamp = this.getTimeStamp(ctxResp.contextElement.attributes[0])
         const strategy: StorageStrategy = new this.storageStrategies[process.env.STORAGE_STRATEGY]().build(virtualDevice,
           timestamp);
-        ctxResp.contextElement.attributes.forEach(att => strategy.addAttribute(att.name, parsers[att.type](att.value)))
+        ctxResp.contextElement.attributes.forEach(att => strategy.addAttribute(att.name, parsers[att.type.toLowerCase()](att.value)))
         return mongoose.connection.collection(this.prefix + '_' + tenant + '_' + virtualDevice.entity_type)
           .insertMany(strategy.getDocuments());
       } catch (err) {
