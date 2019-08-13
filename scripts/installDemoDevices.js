@@ -2,8 +2,7 @@
 exports.__esModule = true;
 var querystring = require("querystring");
 var superagent = require("superagent");
-var iot_frontend_server = 'http://10.1.101.222:32111';
-// const iot_frontend_server = 'http://localhost:3000';
+var iot_frontend_server = 'http://localhost:3000';
 var devices_1 = require("./devices");
 var token = "";
 var createDevices = function () {
@@ -17,7 +16,7 @@ var services = {
     "services": [
         {
             "apikey": "apistatic",
-            "entity_type": "test_sensor",
+            "entity_type": "static",
             "resource": "/iot/d"
         },
         {
