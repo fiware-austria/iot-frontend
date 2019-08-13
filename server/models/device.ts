@@ -13,7 +13,7 @@ const deviceSchema = new mongoose.Schema({
   device_id: {type: mongoose.Schema.Types.String, required: true },
   entity_name: {type: mongoose.Schema.Types.String, required: true},
   entity_type: { type: mongoose.Schema.Types.Mixed},
-  timezone: { type: mongoose.Schema.Types.String, required: true},
+  timezone: { type: mongoose.Schema.Types.String, required: false},
   attributes: [deviceFieldSchema]
 });
 

@@ -27,10 +27,9 @@ export const createAndSaveUsers =
 
 export const getToken = (user: IUser) => jwt.sign({ user: user }, process.env.SECRET_TOKEN);
 
-export const createDevices = (number, service = 'test_tenant') =>
+export const createDevices = (number) =>
   range(number).map(nr => ({
     'device_id': `test_device_${nr}`,
-    'service': service,
     'entity_name': `TestSensor${nr}`,
     'entity_type': 'test_sensor',
     'timezone': 'Europe/Vienna',
@@ -83,7 +82,8 @@ export const createDevices = (number, service = 'test_tenant') =>
     ]
   }));
 
-export const storeDevices = (nr, service='test_tenant') => Device.insertMany(createDevices(nr, service));
+export const storeDevices = (nr, service = 'test_tenant') =>
+  Device.insertMany(createDevices(nr).map(d =>({service: service, ...d})));
 
 export const createGroups = (number, service = 'test_tenant') =>
   range(number).map(nr => ({

@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose';
 import {Request} from 'express';
+import {catTrans} from '../config';
 
 abstract class BaseCtrl<T extends mongoose.Document> {
 
@@ -57,6 +58,7 @@ abstract class BaseCtrl<T extends mongoose.Document> {
   */
   insert = (req, res, next) => {
     const obj = new this.model(req.body);
+    catTrans.debug('Storing object: ' + JSON.stringify(req.body));
     obj.save()
       .then(m => (this.model.hasOwnProperty('load')) ? this.model['load'](m._id) : m)
       .then(m => req[this.model.collection.collectionName] = m)
@@ -65,7 +67,8 @@ abstract class BaseCtrl<T extends mongoose.Document> {
   };
 
   insertBatch = (req, res, next) => {
-      this.model.insertMany(req.body[this.listName])
+    catTrans.debug('Batch insert: ' + JSON.stringify(req.body));
+    this.model.insertMany(req.body[this.listName])
         .then(() => res.status(200).json({message: 'Devices created'}))
         .catch(err => res.status(500).json({message: err}));
   }
