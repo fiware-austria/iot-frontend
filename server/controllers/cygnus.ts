@@ -24,7 +24,7 @@ export default class CygnusCtrl {
     if ('metadata' in a) {
       const timeInstant = a.metadata.find(m => m.type === 'ISO8601');
       if (timeInstant) {
-        timestamp = timeInstant.value;
+        timestamp = new Date(timeInstant.value);
       }
     }
     return timestamp;
