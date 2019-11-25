@@ -87,12 +87,12 @@ entire Ultralight message:
 
  ``` json
  {
-     sensorId: 'mySensor42',
-     entity_name: 'LivingRoom42',
-     entity_type: 'Room',
-     timestamp: <Current Time>,
-     temperature: 15
-     someText: 'abc'
+     "sensorId": "mySensor42",
+     "entity_name": "LivingRoom42",
+     "entity_type": "Room",
+     "timestamp": <Current Time>,
+     "temperature": 15
+     "someText": "abc"
  }
  ```
 
@@ -126,42 +126,52 @@ The corresponding REST end-point is:
 
 `http://<iot-server>:<iot-port>/iot/devives`
 
-In order to register a new device use a payload like the following:
+In order to register a new device or multiple new devices use a payload like the following:
 
 ```json
-{
-    'device_id': `my_sensor`,
-    'entity_name': `MyRoom12`,
-    'entity_type': 'my_entity_type',
-    'timezone': 'Europe/Vienna',
-    'attributes': [
+{"devices": [{
+    "device_id": "OPC-N3",
+    "entity_name": "OPC-N3",
+    "entity_type": "static",
+    "timezone": "Europe/Vienna",
+    "attributes": [
       {
-        'object_id': 't',
-        'name': 'temperature',
-        'type': 'Float'
+        "object_id": "t",
+        "name": "temperature",
+        "type": "Float"
       },
       {
-        'object_id': 'h',
-        'name': 'humidity',
-        'type': 'Float'
+        "object_id": "h",
+        "name": "humidity",
+        "type": "Float"
       },
       {
-        'object_id': 'pm25',
-        'name': 'pm25',
-        'type': 'Int'
+        "object_id": "pm25",
+        "name": "pm25",
+        "type": "Float"
       },
       {
-        'object_id': 'pm10',
-        'name': 'pm10',
-        'type': 'Int'
+        "object_id": "pm10",
+        "name": "pm10",
+        "type": "Float"
       },
       {
-        'object_id': 'ap',
-        'name': 'airPressure',
-        'type': 'Float'
+        "object_id": "pm1",
+        "name": "pm1",
+        "type": "Float"
+      },
+      {
+        "object_id": "ap",
+        "name": "airPressure",
+        "type": "Float"
+      },
+      {
+        "object_id": "no2",
+        "name": "no2",
+        "type": "Float"
       }
     ]
-  }
+  }]}
 ```
 
 The following data types are supported and used to convert to incoming Ultralight text message
