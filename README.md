@@ -57,20 +57,20 @@ For Example, a message like `t|15|k|abc` will result in the following two docume
 
 ``` json
 {
-    sensorId: 'mySensor42',
-    entity_name: 'LivingRoom42',
-    entity_type: 'Room',
-    timestamp: <Current Time>,
-    valueName: 'temperature',
-    value: 15
+    "sensorId": "mySensor42",
+    "entity_name": "LivingRoom42",
+    "entity_type": "Room",
+    "timestamp": "<Current Time>",
+    "valueName": "temperature",
+    "value": 15
 }
 {
-    sensorId: 'mySensor42',
-    entity_name: 'LivingRoom42',
-    entity_type: 'Room',
-    timestamp: <Current Time>,
-    valueName: 'someText',
-    value: 'abc'
+    "sensorId": "mySensor42",
+    "entity_name": "LivingRoom42",
+    "entity_type": "Room",
+    "timestamp": "<Current Time>",
+    "valueName": "someText",
+    "value": "abc"
 }
 ```
 
@@ -90,8 +90,8 @@ entire Ultralight message:
      "sensorId": "mySensor42",
      "entity_name": "LivingRoom42",
      "entity_type": "Room",
-     "timestamp": <Current Time>,
-     "temperature": 15
+     "timestamp": "<Current Time>",
+     "temperature": 15,
      "someText": "abc"
  }
  ```
@@ -111,11 +111,11 @@ By sending a message like the following using `POST`, a new service will be crea
 
 ```json
 {
-    'apikey': `myAPI`,
-    'token': 'myToken',
-    'entity_type': 'my_entity_type',
-    'resource': '/iot/d'
-  }
+    "apikey": `myAPI`,
+    "token": "myToken",
+    "entity_type": "my_entity_type",
+    "resource": "/iot/d"
+}
 ```
 
 Sending a `GET` request will get you a list of all registered services
@@ -217,40 +217,40 @@ Requests have to be sent via POST to the URI `/notify`. A typical request looks 
 
 ```
 {
-  subscriptionId: '1234',
-  originator: 'localhost',
-  contextResponses: [
+  "subscriptionId": "1234",
+  "originator": "localhost",
+  "contextResponses": [
     {
-      contextElement: {
-        type: 'Room',
-        isPattern: false,
-        id: 'Room42,
-        attributes: [
+      "contextElement": {
+        "type": "Room",
+        "isPattern": false,
+        "id": "Room42,
+        "attributes": [
             {
-              name: 'temperature',
-              type: 'Float',
-              value: '24.73',
-              metadata: [{
-                name: 'TimeInstant',
-                type: 'ISO8601',
-                value: '2019-08-05T08:46:03.215Z'
+              "name": "temperature",
+              "type": "Float",
+              "value": "24.73",
+              "metadata": [{
+                "name": "TimeInstant",
+                "type": "ISO8601",
+                "value": "2019-08-05T08:46:03.215Z"
               }]
             },
             {
-              name: 'humidity',
-              type: 'Float',
-              value: '64.5',
-              metadata: [{
-                name: 'TimeInstant',
-                type: 'ISO8601',
-                value: '2019-08-05T08:46:03.215Z'
+              "name": "humidity",
+              "type": "Float",
+              "value": "64.5",
+              "metadata": [{
+                "name": "TimeInstant",
+                "type": "ISO8601",
+                "value": "2019-08-05T08:46:03.215Z"
               }]
             }
         ]
       },
-      statusCode: {
-        code: 200,
-        reasonPhrase: 'OK'
+      "statusCode": {
+        "code": 200,
+        "reasonPhrase": "OK"
       }
   ],
 }
